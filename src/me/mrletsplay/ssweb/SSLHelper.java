@@ -20,7 +20,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
 
-public class SSLStuff {
+public class SSLHelper {
 
 	public static SSLContext getContext() {
 		SSLContext context;

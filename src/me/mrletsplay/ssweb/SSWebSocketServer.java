@@ -41,7 +41,7 @@ public class SSWebSocketServer extends WebSocketServer {
 		setTcpNoDelay(true);
 		
 		if(!SSWeb.IS_BETA) {
-			SSLContext ctx = SSLStuff.getContext();
+			SSLContext ctx = SSLHelper.getContext();
 			System.out.println("SSL ctx: " + ctx);
 			setWebSocketFactory(new DefaultSSLWebSocketServerFactory(ctx));
 		}
