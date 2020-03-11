@@ -60,7 +60,7 @@ public class VoteHandler extends SingleTypePacketHandler<PacketClientVote> {
 						}
 					}
 					
-					
+					s.resetFailedElections();
 					s.setMoveState(GameMoveState.DRAW_CARDS);
 					r.broadcastStateUpdate();
 				}else {
@@ -76,7 +76,7 @@ public class VoteHandler extends SingleTypePacketHandler<PacketClientVote> {
 					
 					if(s.getFailedElections() == 3) {
 						s.randomCard();
-						s.setFailedElections(0);
+						s.resetFailedElections();
 					}
 					
 					r.broadcastStateUpdate();

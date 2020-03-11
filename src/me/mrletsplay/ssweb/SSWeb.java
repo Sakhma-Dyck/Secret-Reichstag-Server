@@ -63,7 +63,7 @@ import me.mrletsplay.ssweb.packet.impl.PacketServerVoteResults;
 
 public class SSWeb {
 	
-	public static final boolean IS_BETA = true;
+	public static final boolean IS_BETA = false;
 	
 	public static final List<Class<? extends JavaScriptConvertible>> SERIALIZABLE_CLASSES = Arrays.asList(
 				PacketClientConnect.class,
