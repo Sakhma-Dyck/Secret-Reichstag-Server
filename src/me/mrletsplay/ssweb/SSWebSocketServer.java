@@ -106,6 +106,19 @@ public class SSWebSocketServer extends WebSocketServer {
 		if(pl == null) {
 			if(p.getData() instanceof PacketClientConnect) {
 				PacketClientConnect con = (PacketClientConnect) p.getData();
+				
+				String pName = con.getPlayerName().trim();
+				
+				if(pName.isEmpty()) {
+					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be empty")).toJSON().toString());
+					return;
+				}
+				
+				if(pName.length() > 20) {
+					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
+					return;
+				}
+				
 				pl = new Player(conn, con.getPlayerName());
 				
 				Room r;
@@ -132,6 +145,11 @@ public class SSWebSocketServer extends WebSocketServer {
 					if(r == null) {
 						pl.send(new Packet(p.getID(), new PacketServerJoinError("Invalid room id")));
 						conn.close();
+						return;
+					}
+					
+					if(r.getPlayers().stream().anyMatch(o -> o.getName().toLowerCase().equals(pName))) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name already taken")).toJSON().toString());
 						return;
 					}
 					
