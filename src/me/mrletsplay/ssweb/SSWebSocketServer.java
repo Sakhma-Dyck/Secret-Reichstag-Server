@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 
@@ -31,6 +33,8 @@ import me.mrletsplay.ssweb.packet.impl.PacketServerKeepAlive;
 import me.mrletsplay.ssweb.packet.impl.PacketServerRoomInfo;
 
 public class SSWebSocketServer extends WebSocketServer {
+	
+	private static final Pattern NAME_PATTERN = Pattern.compile("(?:[a-zA-Z0-9äöü]){1,20}");
 	
 	private List<PacketHandler> handlers;
 	
@@ -114,6 +118,12 @@ public class SSWebSocketServer extends WebSocketServer {
 					return;
 				}
 				
+				Matcher m = NAME_PATTERN.matcher(pName);
+				if(!m.matches()) {
+					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name contains invalid characters")).toJSON().toString());
+					return;
+				}
+				
 				if(pName.length() > 20) {
 					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
 					return;
@@ -148,7 +158,7 @@ public class SSWebSocketServer extends WebSocketServer {
 						return;
 					}
 					
-					if(r.getPlayers().stream().anyMatch(o -> o.getName().toLowerCase().equals(pName))) {
+					if(r.getPlayers().stream().anyMatch(o -> o.getName().toLowerCase().equals(pName.toLowerCase()))) {
 						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name already taken")).toJSON().toString());
 						return;
 					}
