@@ -37,7 +37,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 				{
 					ActionKillPlayer a = (ActionKillPlayer) data.getData();
 					Player p = r.getPlayer(a.getPlayerID());
-					if(s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
+					if(p == null || s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
 					s.addDeadPlayer(p);
 					
 					r.broadcastEventLogEntry(player.getName() + " kills " + p.getName());
@@ -65,7 +65,8 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 				{
 					ActionBlockPlayer a = (ActionBlockPlayer) data.getData();
 					Player p = r.getPlayer(a.getPlayerID());
-					if(s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
+					if(p == null || s.isPlayerDead(p) || player.equals(p) || p.equals(s.getChancellor())
+							|| (p.equals(s.getPresident()) && r.getPlayers().size() >= 8)) return PacketServerNoData.INSTANCE;
 
 					s.setBlockedPlayer(p);
 					s.advanceRound();
@@ -80,7 +81,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 				{
 					ActionInspectPlayer a = (ActionInspectPlayer) data.getData();
 					Player p = r.getPlayer(a.getPlayerID());
-					if(s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
+					if(p == null || s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
 					
 					s.advanceRound();
 					r.broadcastStateUpdate();
@@ -95,7 +96,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 				{
 					ActionExamineTopCardsOther a = (ActionExamineTopCardsOther) data.getData();
 					Player p = r.getPlayer(a.getPlayerID());
-					if(s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
+					if(p == null || s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
 					
 					s.setActionPerformer(p);
 					s.setAction(GameBoardAction.EXAMINE_TOP_CARDS);
@@ -109,7 +110,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 				{
 					ActionPickPresident a = (ActionPickPresident) data.getData();
 					Player p = r.getPlayer(a.getPlayerID());
-					if(s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
+					if(p == null || s.isPlayerDead(p) || player.equals(p)) return PacketServerNoData.INSTANCE;
 					
 					s.advanceRound(false);
 					s.setPresident(p);
