@@ -42,9 +42,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 					
 					r.broadcastEventLogEntry(player.getName() + " kills " + p.getName());
 					
-					if(s.getCommunists().stream().allMatch(s::isPlayerDead)
-							&& s.getFascists().stream().allMatch(s::isPlayerDead)
-							&& (s.getHitler() == null || s.isPlayerDead(s.getHitler()))
+					if((s.getHitler() == null || s.isPlayerDead(s.getHitler()))
 							&& (s.getStalin() == null || s.isPlayerDead(s.getStalin()))) {
 						r.setWinner(GameParty.LIBERAL);
 						r.stopGame();

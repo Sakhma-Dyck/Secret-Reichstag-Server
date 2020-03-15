@@ -378,8 +378,11 @@ public class GameState implements JavaScriptConvertible {
 	public void advancePresident() {
 		presidentIndex = (presidentIndex + 1) % room.getPlayers().size();
 		this.president = room.getPlayers().get(presidentIndex);
-		if(isPlayerDead(president) || president.equals(blockedPlayer)) advancePresident();
-		room.broadcastEventLogEntry("New president is " + president.getName());
+		if(isPlayerDead(president) || president.equals(blockedPlayer)) {
+			advancePresident();
+		}else {
+			room.broadcastEventLogEntry("New president is " + president.getName());
+		}
 	}
 	
 	public void advanceRound(boolean advancePresident) {
@@ -419,16 +422,22 @@ public class GameState implements JavaScriptConvertible {
 			Collections.shuffle(drawPile);
 		}
 		
+		GameBoardAction ac = null;
 		switch(card) {
 			case COMMUNIST:
-				communistBoard.addCard();
+				ac = communistBoard.addCard();
 				break;
 			case FASCIST:
-				fascistBoard.addCard();
+				ac = fascistBoard.addCard();
 				break;
 			case LIBERAL:
-				liberalBoard.addCard();
+				ac = liberalBoard.addCard();
 				break;
+		}
+		
+		if(ac.equals(GameBoardAction.WIN)) {
+			room.setWinner(card.getParty());
+			room.stopGame();
 		}
 		
 		return card;
