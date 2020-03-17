@@ -1,4 +1,4 @@
-package me.mrletsplay.srweb;
+package me.mrletsplay.srweb.util;
 
 import me.mrletsplay.srweb.game.Player;
 

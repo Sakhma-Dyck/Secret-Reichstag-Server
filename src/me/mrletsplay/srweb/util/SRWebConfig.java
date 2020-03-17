@@ -1,4 +1,4 @@
-package me.mrletsplay.srweb;
+package me.mrletsplay.srweb.util;
 
 import java.io.File;
 
@@ -15,6 +15,8 @@ public class SRWebConfig {
 		config.addDefault("ssl.certificate-path", "pem/cert.pem");
 		config.addDefault("ssl.private-key-path", "pem/privkey.pem");
 		config.addDefault("ssl.certificate-password", "");
+		config.applyDefaults();
+		config.saveToFile();
 	}
 	
 	public static boolean isEnableSSL() {

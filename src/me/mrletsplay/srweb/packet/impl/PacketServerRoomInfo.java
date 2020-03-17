@@ -9,6 +9,10 @@ import me.mrletsplay.srweb.packet.PacketData;
 public class PacketServerRoomInfo extends PacketData {
 	
 	@JSONValue
+	@JavaScriptGetter("getSessionID")
+	private String sessionID;
+	
+	@JSONValue
 	@JavaScriptGetter("getSelfPlayer")
 	private Player selfPlayer;
 	
@@ -16,10 +20,10 @@ public class PacketServerRoomInfo extends PacketData {
 	@JavaScriptGetter("getRoom")
 	private Room room;
 	
-	public PacketServerRoomInfo(Player selfPlayer, Room room) {
+	public PacketServerRoomInfo(String sessionID, Player selfPlayer, Room room) {
+		this.sessionID = sessionID;
 		this.selfPlayer = selfPlayer;
 		this.room = room;
-		
 	}
 	
 }

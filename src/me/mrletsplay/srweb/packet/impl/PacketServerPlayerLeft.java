@@ -10,8 +10,12 @@ public class PacketServerPlayerLeft extends PacketData {
 	@JSONValue
 	@JavaScriptGetter("getPlayer")
 	private Player player;
+	
+	@JSONValue
+	@JavaScriptGetter("isHardLeave")
+	private boolean hardLeave;
 
-	public PacketServerPlayerLeft(Player player) {
+	public PacketServerPlayerLeft(Player player, boolean hardLeave) {
 		this.player = player;
 	}
 	

@@ -10,9 +10,14 @@ public class PacketServerPlayerJoined extends PacketData {
 	@JSONValue
 	@JavaScriptGetter("getPlayer")
 	private Player player;
+	
+	@JSONValue
+	@JavaScriptGetter("isRejoin")
+	private boolean rejoin;
 
-	public PacketServerPlayerJoined(Player player) {
+	public PacketServerPlayerJoined(Player player, boolean rejoin) {
 		this.player = player;
+		this.rejoin = rejoin;
 	}
 	
 }

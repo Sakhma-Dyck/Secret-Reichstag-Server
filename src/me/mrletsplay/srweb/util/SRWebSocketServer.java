@@ -1,4 +1,4 @@
-package me.mrletsplay.srweb;
+package me.mrletsplay.srweb.util;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -21,6 +21,7 @@ import org.java_websocket.server.WebSocketServer;
 import me.mrletsplay.mrcore.json.JSONArray;
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.converter.JSONConverter;
+import me.mrletsplay.srweb.SRWeb;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
 import me.mrletsplay.srweb.packet.ClassSerializer;
@@ -31,6 +32,8 @@ import me.mrletsplay.srweb.packet.impl.PacketClientConnect;
 import me.mrletsplay.srweb.packet.impl.PacketServerJoinError;
 import me.mrletsplay.srweb.packet.impl.PacketServerKeepAlive;
 import me.mrletsplay.srweb.packet.impl.PacketServerRoomInfo;
+import me.mrletsplay.srweb.session.PlayerSession;
+import me.mrletsplay.srweb.session.SRWebSessionStore;
 
 public class SRWebSocketServer extends WebSocketServer {
 	
@@ -75,7 +78,7 @@ public class SRWebSocketServer extends WebSocketServer {
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		System.out.println("CONNECT: " + conn.getRemoteSocketAddress());
+		System.out.println("Connection from " + conn.getRemoteSocketAddress());
 		JSONObject obj = new JSONObject();
 		obj.put("init", true);
 		
@@ -90,9 +93,12 @@ public class SRWebSocketServer extends WebSocketServer {
 
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		System.out.println("DISCONNECT: " + conn.getRemoteSocketAddress() + " (" + code + ")");
+		System.out.println("Disconnect from " + conn.getRemoteSocketAddress() + " (code: " + code + ")");
 		Player p = SRWeb.getPlayer(conn);
-		if(p != null) SRWeb.removePlayer(p);
+		if(p != null) {
+			p.setWebSocket(null);
+			SRWeb.removePlayer(p);
+		}
 	}
 
 	@Override
@@ -111,6 +117,28 @@ public class SRWebSocketServer extends WebSocketServer {
 			if(p.getData() instanceof PacketClientConnect) {
 				PacketClientConnect con = (PacketClientConnect) p.getData();
 				
+				if(con.getSessionID() != null) {
+					PlayerSession sess = SRWebSessionStore.getSession(con.getSessionID());
+					
+					if(sess == null) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, session expired")).toJSON().toString());
+						return;
+					}
+					
+					pl = sess.getPlayer();
+					pl.setWebSocket(conn);
+					
+					if(SRWeb.getRoom(pl.getRoom().getID()) == null) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, room closed")).toJSON().toString());
+						return;
+					}
+					
+					SRWeb.addPlayer(pl);
+					pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
+					pl.getRoom().rejoinPlayer(pl);
+					return;
+				}
+				
 				String pName = con.getPlayerName().trim();
 				
 				if(pName.isEmpty()) {
@@ -118,14 +146,14 @@ public class SRWebSocketServer extends WebSocketServer {
 					return;
 				}
 				
-				Matcher m = NAME_PATTERN.matcher(pName);
-				if(!m.matches()) {
-					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name contains invalid characters")).toJSON().toString());
+				if(pName.length() > 20) {
+					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
 					return;
 				}
 				
-				if(pName.length() > 20) {
-					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
+				Matcher m = NAME_PATTERN.matcher(pName);
+				if(!m.matches()) {
+					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name contains invalid characters")).toJSON().toString());
 					return;
 				}
 				
@@ -177,8 +205,9 @@ public class SRWebSocketServer extends WebSocketServer {
 				}
 
 				SRWeb.addPlayer(pl);
+				String sessID = SRWebSessionStore.createSession(pl);
 				r.addPlayer(pl);
-				pl.send(new Packet(p.getID(), new PacketServerRoomInfo(pl, r)));
+				pl.send(new Packet(p.getID(), new PacketServerRoomInfo(sessID, pl, r)));
 				return;
 			}else {
 				conn.close(CloseFrame.POLICY_VALIDATION, "Not a connect packet");
@@ -209,7 +238,7 @@ public class SRWebSocketServer extends WebSocketServer {
 
 	@Override
 	public void onStart() {
-		System.out.println("SERVER IS ON: " + getPort());
+		System.out.println("Server is listening on port " + getPort());
 	}
 	
 	@Override

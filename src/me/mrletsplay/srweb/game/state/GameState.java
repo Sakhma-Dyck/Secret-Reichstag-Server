@@ -110,6 +110,7 @@ public class GameState implements JavaScriptConvertible {
 		this.liberalBoard = new GameBoard(5);
 		
 		int numPlayers = room.getSettings().getPlayerCount();
+		
 		if(numPlayers <= 8) {
 			this.communistBoard = new GameBoard(6,
 					new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),

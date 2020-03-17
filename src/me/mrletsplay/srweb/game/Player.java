@@ -8,6 +8,7 @@ import org.java_websocket.WebSocket;
 
 import me.mrletsplay.mrcore.json.converter.JSONValue;
 import me.mrletsplay.srweb.game.state.GamePolicyCard;
+import me.mrletsplay.srweb.game.state.board.action.GameActionData;
 import me.mrletsplay.srweb.packet.JavaScriptConvertible;
 import me.mrletsplay.srweb.packet.JavaScriptGetter;
 import me.mrletsplay.srweb.packet.Packet;
@@ -27,6 +28,8 @@ public class Player implements JavaScriptConvertible {
 	private String name;
 	
 	private List<GamePolicyCard> hand;
+	
+	private GameActionData actionData;
 	
 	public Player(WebSocket webSocket, String name) {
 		this.webSocket = webSocket;
@@ -63,7 +66,24 @@ public class Player implements JavaScriptConvertible {
 		return hand;
 	}
 	
+	public void setWebSocket(WebSocket webSocket) {
+		this.webSocket = webSocket;
+	}
+	
+	public boolean isOnline() {
+		return webSocket != null && webSocket.isOpen();
+	}
+	
+	public void setActionData(GameActionData actionData) {
+		this.actionData = actionData;
+	}
+	
+	public GameActionData getActionData() {
+		return actionData;
+	}
+	
 	public void send(Packet p) {
+		if(!isOnline()) return;
 		webSocket.send(p.toJSON().toString());
 	}
 	

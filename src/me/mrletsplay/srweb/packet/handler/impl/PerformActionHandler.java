@@ -122,7 +122,8 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 					break;
 					
 			}
-
+			
+			player.setActionData(null);
 			s.advanceRound();
 			r.broadcastStateUpdate();
 		}

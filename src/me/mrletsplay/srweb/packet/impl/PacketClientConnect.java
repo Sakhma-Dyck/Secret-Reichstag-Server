@@ -28,6 +28,10 @@ public class PacketClientConnect extends PacketData {
 	@JavaScriptSetter("setRoomSettings")
 	private RoomSettings roomSettings;
 	
+	@JSONValue
+	@JavaScriptSetter("setSessionID")
+	private String sessionID;
+	
 	@JSONConstructor
 	private PacketClientConnect() {}
 	
@@ -49,6 +53,10 @@ public class PacketClientConnect extends PacketData {
 	
 	public RoomSettings getRoomSettings() {
 		return roomSettings;
+	}
+	
+	public String getSessionID() {
+		return sessionID;
 	}
 
 }

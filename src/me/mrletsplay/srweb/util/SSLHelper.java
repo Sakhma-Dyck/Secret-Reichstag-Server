@@ -1,4 +1,4 @@
-package me.mrletsplay.srweb;
+package me.mrletsplay.srweb.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,6 +20,8 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
 
+import me.mrletsplay.mrcore.misc.FriendlyException;
+
 public class SSLHelper {
 
 	public static SSLContext getContext() {
@@ -28,10 +30,22 @@ public class SSLHelper {
 		
 		try {
 			context = SSLContext.getInstance("TLS");
+			
+			File certFile = new File(SRWebConfig.getCertificatePath());
+			
+			if(!certFile.exists()) {
+				throw new FriendlyException("SSL certificate file doesn't exist (" + certFile.getAbsolutePath() + ")");
+			}
+			
+			File privKeyFile = new File(SRWebConfig.getPrivateKeyPath());
+			
+			if(!privKeyFile.exists()) {
+				throw new FriendlyException("Private Key file doesn't exist (" + certFile.getAbsolutePath() + ")");
+			}
 
-			byte[] certBytes = parseDERFromPEM(getBytes(new File(SRWebConfig.getCertificatePath())),
+			byte[] certBytes = parseDERFromPEM(getBytes(certFile),
 					"-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
-			byte[] keyBytes = parseDERFromPEM(getBytes(new File(SRWebConfig.getPrivateKeyPath())),
+			byte[] keyBytes = parseDERFromPEM(getBytes(privKeyFile),
 					"-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----");
 
 			X509Certificate cert = generateCertificateFromDER(certBytes);

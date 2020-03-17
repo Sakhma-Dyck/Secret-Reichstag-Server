@@ -15,11 +15,16 @@ import me.mrletsplay.srweb.packet.JavaScriptGetter;
 import me.mrletsplay.srweb.packet.JavaScriptSetter;
 import me.mrletsplay.srweb.packet.Packet;
 import me.mrletsplay.srweb.packet.impl.PacketServerEventLogEntry;
+import me.mrletsplay.srweb.packet.impl.PacketServerPauseGame;
+import me.mrletsplay.srweb.packet.impl.PacketServerPickCards;
+import me.mrletsplay.srweb.packet.impl.PacketServerPlayerAction;
 import me.mrletsplay.srweb.packet.impl.PacketServerPlayerJoined;
 import me.mrletsplay.srweb.packet.impl.PacketServerPlayerLeft;
 import me.mrletsplay.srweb.packet.impl.PacketServerStartGame;
 import me.mrletsplay.srweb.packet.impl.PacketServerStopGame;
+import me.mrletsplay.srweb.packet.impl.PacketServerUnpauseGame;
 import me.mrletsplay.srweb.packet.impl.PacketServerUpdateGameState;
+import me.mrletsplay.srweb.packet.impl.PacketServerVeto;
 
 public class Room implements JavaScriptConvertible {
 	
@@ -44,7 +49,13 @@ public class Room implements JavaScriptConvertible {
 	
 	@JSONValue
 	@JavaScriptGetter("isGameRunning")
+	@JavaScriptSetter("setGameRunning")
 	private boolean gameRunning;
+	
+	@JSONValue
+	@JavaScriptGetter("isGamePaused")
+	@JavaScriptSetter("setGamePaused")
+	private boolean gamePaused;
 	
 	@JSONValue
 	@JavaScriptGetter("getSettings")
@@ -83,6 +94,10 @@ public class Room implements JavaScriptConvertible {
 		return gameRunning;
 	}
 	
+	public boolean isGamePaused() {
+		return gamePaused;
+	}
+	
 	public void setSettings(RoomSettings settings) {
 		this.settings = settings;
 	}
@@ -101,19 +116,56 @@ public class Room implements JavaScriptConvertible {
 	
 	public void addPlayer(Player player) {
 		player.setRoom(this);
-		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player))));
+		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player, false))));
 		players.add(player);
 		
 		broadcastEventLogEntry(player.getName() + " joined");
 	}
 	
+	public void rejoinPlayer(Player player) {
+		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player, true))));
+		
+		player.send(new Packet(getStartPackage(gameState.getRole(player))));
+		
+		if(players.stream().allMatch(Player::isOnline)) unpauseGame();
+		
+		// Tell player everything they need to know to continue
+		
+		if((gameState.getMoveState().equals(GameMoveState.DISCARD_PRESIDENT) && player.equals(gameState.getPresident()))
+				|| (gameState.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR) && player.equals(gameState.getChancellor()))) {
+			System.out.println("DISCARD");
+			player.send(new Packet(new PacketServerPickCards(player.getHand(), gameState.isVetoBlocked())));
+		}
+		
+		if(gameState.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR) && player.equals(gameState.getPresident()) && gameState.isVetoPowerUnlocked() && gameState.isVetoRequested()) {
+			player.send(new Packet(new PacketServerVeto()));
+		}
+		
+		if(gameState.getMoveState().equals(GameMoveState.ACTION) && player.equals(gameState.getActionPerformer())) {
+			player.send(new Packet(new PacketServerPlayerAction(gameState.getAction(), player.getActionData())));
+		}
+		
+		broadcastEventLogEntry(player.getName() + " rejoined");
+	}
+	
 	public void removePlayer(Player player) {
-		if(!players.remove(player)) return;
-		player.setRoom(null);
-		if(players.isEmpty()) SRWeb.removeRoom(this);
-		players.forEach(p -> p.send(new Packet(new PacketServerPlayerLeft(player))));
-		if(gameRunning && !gameState.isPlayerDead(player)) stopGame();
-		gameState.getDeadPlayers().remove(player);
+		if(!players.contains(player)) return;
+		
+		boolean closeRoom = players.isEmpty() || players.stream().allMatch(p -> !p.isOnline());
+		boolean hardLeave = closeRoom || !gameRunning /*|| gameState.isPlayerDead(player)*/;
+		
+		if(hardLeave) {
+			player.setRoom(null);
+			gameState.getDeadPlayers().remove(player);
+			players.remove(player);
+		}
+		
+		if(closeRoom) SRWeb.removeRoom(this);
+		players.forEach(p -> p.send(new Packet(new PacketServerPlayerLeft(player, hardLeave))));
+		if(gameRunning /*&& !gameState.isPlayerDead(player)*/) {
+//			stopGame();
+			pauseGame();
+		}
 		
 		broadcastEventLogEntry(player.getName() + " left");
 	}
@@ -134,6 +186,11 @@ public class Room implements JavaScriptConvertible {
 		} else if(r == 2) {
 			nL = (players.size() - 2) / 3 + 2;
 			nCF = (players.size() - 2) / 3;
+		}
+		
+		if(players.size() == 2) { // NONBETA
+			nL = 0;
+			nCF = 1;
 		}
 		
 		List<Player> remainingPlayers = new ArrayList<>(players);
@@ -169,15 +226,32 @@ public class Room implements JavaScriptConvertible {
 		gameState.setPresidentIndex(presidentIndex);
 		
 		// shows players what they're supposed to see
-		liberals.forEach(l -> l.send(new Packet(new PacketServerStartGame(GameRole.LIBERAL, null, null))));
+		liberals.forEach(l -> l.send(new Packet(getStartPackage(GameRole.LIBERAL))));
 		
-		stalin.send(new Packet(new PacketServerStartGame(GameRole.STALIN, null, players.size() > 9 ? null : communists)));
-		communists.forEach(l -> l.send(new Packet(new PacketServerStartGame(GameRole.COMMUNIST, stalin, communists))));
+		stalin.send(new Packet(getStartPackage(GameRole.STALIN)));
+		communists.forEach(l -> l.send(new Packet(getStartPackage(GameRole.COMMUNIST))));
 		
-		hitler.send(new Packet(new PacketServerStartGame(GameRole.HITLER, null, players.size() > 9 ? null : fascists)));
-		fascists.forEach(l -> l.send(new Packet(new PacketServerStartGame(GameRole.FASCIST, hitler, fascists))));
+		hitler.send(new Packet(getStartPackage(GameRole.HITLER)));
+		fascists.forEach(l -> l.send(new Packet(getStartPackage(GameRole.FASCIST))));
 		
 		broadcastStateUpdate();
+	}
+	
+	private PacketServerStartGame getStartPackage(GameRole role) {
+		switch(role) {
+			case LIBERAL:
+				return new PacketServerStartGame(GameRole.LIBERAL, null, null);
+			case STALIN:
+				return new PacketServerStartGame(GameRole.STALIN, null, players.size() > 9 ? null : gameState.getCommunists());
+			case COMMUNIST:
+				return new PacketServerStartGame(GameRole.COMMUNIST, gameState.getStalin(), gameState.getCommunists());
+			case HITLER:
+				return new PacketServerStartGame(GameRole.HITLER, null, players.size() > 9 ? null : gameState.getFascists());
+			case FASCIST:
+				return new PacketServerStartGame(GameRole.FASCIST, gameState.getHitler(), gameState.getFascists());
+			default:
+				return null;
+		}
 	}
 	
 	public Player getPlayer(String id) {
@@ -188,6 +262,18 @@ public class Room implements JavaScriptConvertible {
 	
 	public boolean isFull() {
 		return players.size() >= settings.getPlayerCount();
+	}
+	
+	public void pauseGame() {
+		gamePaused = true;
+		players.forEach(p -> p.send(new Packet(new PacketServerPauseGame())));
+		broadcastStateUpdate();
+	}
+	
+	public void unpauseGame() {
+		gamePaused = false;
+		players.forEach(p -> p.send(new Packet(new PacketServerUnpauseGame())));
+		broadcastStateUpdate();
 	}
 	
 	public void stopGame() {

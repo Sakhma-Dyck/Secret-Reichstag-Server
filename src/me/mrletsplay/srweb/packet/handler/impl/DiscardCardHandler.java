@@ -81,6 +81,7 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 				
 				s.setMoveState(GameMoveState.ACTION);
 				s.setActionPerformer(s.getPresident());
+				s.getActionPerformer().setActionData(aData);
 				s.setAction(ac);
 				s.getPresident().send(new Packet(new PacketServerPlayerAction(ac, aData)));
 				

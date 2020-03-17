@@ -49,6 +49,7 @@ import me.mrletsplay.srweb.packet.impl.PacketServerEventLogEntry;
 import me.mrletsplay.srweb.packet.impl.PacketServerJoinError;
 import me.mrletsplay.srweb.packet.impl.PacketServerKeepAlive;
 import me.mrletsplay.srweb.packet.impl.PacketServerNoData;
+import me.mrletsplay.srweb.packet.impl.PacketServerPauseGame;
 import me.mrletsplay.srweb.packet.impl.PacketServerPickCards;
 import me.mrletsplay.srweb.packet.impl.PacketServerPlayerAction;
 import me.mrletsplay.srweb.packet.impl.PacketServerPlayerJoined;
@@ -57,11 +58,19 @@ import me.mrletsplay.srweb.packet.impl.PacketServerRoomInfo;
 import me.mrletsplay.srweb.packet.impl.PacketServerRoomList;
 import me.mrletsplay.srweb.packet.impl.PacketServerStartGame;
 import me.mrletsplay.srweb.packet.impl.PacketServerStopGame;
+import me.mrletsplay.srweb.packet.impl.PacketServerUnpauseGame;
 import me.mrletsplay.srweb.packet.impl.PacketServerUpdateGameState;
 import me.mrletsplay.srweb.packet.impl.PacketServerVeto;
 import me.mrletsplay.srweb.packet.impl.PacketServerVoteResults;
 
 public class SRWeb {
+	
+	/*
+	 * TODO REJOIN
+	 * - Add/remove start btn accordingly
+	 * - Add un-/pause functionality to client
+	 * - Display player as offline
+	 */
 	
 	public static final List<Class<? extends JavaScriptConvertible>> SERIALIZABLE_CLASSES = Arrays.asList(
 				PacketClientConnect.class,
@@ -90,6 +99,8 @@ public class SRWeb {
 				PacketServerVeto.class,
 				PacketServerEventLogEntry.class,
 				PacketServerKeepAlive.class,
+				PacketServerPauseGame.class,
+				PacketServerUnpauseGame.class,
 				
 				Room.class,
 				Player.class,

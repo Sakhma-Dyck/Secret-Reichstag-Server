@@ -3,6 +3,8 @@ package me.mrletsplay.srweb;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import me.mrletsplay.srweb.util.SRWebSocketServer;
+
 public class SRWebMain {
 	
 	public static void main(String[] args) throws IOException {
