@@ -38,7 +38,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>me.mrletsplay.ssweb.SSWebMain</mainClass>
+							<mainClass>me.mrletsplay.srweb.SRWebMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

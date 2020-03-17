@@ -65,13 +65,6 @@ import me.mrletsplay.srweb.packet.impl.PacketServerVoteResults;
 
 public class SRWeb {
 	
-	/*
-	 * TODO REJOIN
-	 * - Add/remove start btn accordingly
-	 * - Add un-/pause functionality to client
-	 * - Display player as offline
-	 */
-	
 	public static final List<Class<? extends JavaScriptConvertible>> SERIALIZABLE_CLASSES = Arrays.asList(
 				PacketClientConnect.class,
 				PacketClientDrawCards.class,
