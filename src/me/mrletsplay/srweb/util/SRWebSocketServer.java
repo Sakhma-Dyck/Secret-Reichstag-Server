@@ -111,106 +111,111 @@ public class SRWebSocketServer extends WebSocketServer {
 		
 		if(pl == null) {
 			if(p.getData() instanceof PacketClientConnect) {
-				PacketClientConnect con = (PacketClientConnect) p.getData();
-				
-				if(con.getSessionID() != null) {
-					PlayerSession sess = SRWebSessionStore.getSession(con.getSessionID());
+				try {
+					PacketClientConnect con = (PacketClientConnect) p.getData();
 					
-					if(sess == null) {
-						conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, session expired")).toJSON().toString());
+					if(con.getSessionID() != null) {
+						PlayerSession sess = SRWebSessionStore.getSession(con.getSessionID());
+						
+						if(sess == null) {
+							conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, session expired")).toJSON().toString());
+							return;
+						}
+						
+						pl = sess.getPlayer();
+						
+						if(pl.isOnline()) {
+							conn.send(new Packet(p.getID(), new PacketServerJoinError("Session already in use")).toJSON().toString());
+							return;
+						}
+						
+						pl.setWebSocket(conn);
+						
+						if(pl.getRoom() == null || SRWeb.getRoom(pl.getRoom().getID()) == null) {
+							conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, room closed")).toJSON().toString());
+							return;
+						}
+						
+						SRWeb.addPlayer(pl);
+						pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
+						pl.getRoom().rejoinPlayer(pl);
 						return;
 					}
 					
-					pl = sess.getPlayer();
+					String pName = con.getPlayerName().trim();
 					
-					if(pl.isOnline()) {
-						conn.send(new Packet(p.getID(), new PacketServerJoinError("Session already in use")).toJSON().toString());
+					if(pName.isEmpty()) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be empty")).toJSON().toString());
 						return;
 					}
 					
-					pl.setWebSocket(conn);
-					
-					if(pl.getRoom() == null || SRWeb.getRoom(pl.getRoom().getID()) == null) {
-						conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, room closed")).toJSON().toString());
+					if(pName.length() > 20) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
 						return;
 					}
 					
+					Matcher m = NAME_PATTERN.matcher(pName);
+					if(!m.matches()) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name contains invalid characters")).toJSON().toString());
+						return;
+					}
+					
+					pl = new Player(conn, con.getPlayerName());
+					
+					Room r;
+					
+					if(con.isCreateRoom()) {
+						if(con.getRoomName() == null || con.getRoomName().isEmpty()) {
+							conn.close(CloseFrame.POLICY_VALIDATION);
+							return;
+						}
+						
+						if(!con.getRoomSettings().isValid()) {
+							pl.send(new Packet(p.getID(), new PacketServerJoinError("Invalid room settings")));
+							return;
+						}
+						
+						r = SRWeb.createRoom(con.getRoomName(), con.getRoomSettings());
+					}else {
+						if(con.getRoomID() == null || con.getRoomID().isEmpty()) {
+							conn.close(CloseFrame.POLICY_VALIDATION);
+							return;
+						}
+						
+						r = SRWeb.getRoom(con.getRoomID());
+						if(r == null) {
+							pl.send(new Packet(p.getID(), new PacketServerJoinError("Invalid room id")));
+							conn.close();
+							return;
+						}
+						
+						if(r.getPlayers().stream().anyMatch(o -> o.getName().toLowerCase().equals(pName.toLowerCase()))) {
+							conn.send(new Packet(p.getID(), new PacketServerJoinError("Name already taken")).toJSON().toString());
+							return;
+						}
+						
+						if(r.isFull()) {
+							pl.send(new Packet(p.getID(), new PacketServerJoinError("Room is full")));
+							conn.close();
+							return;
+						}
+						
+						if(r.isGameRunning()) {
+							pl.send(new Packet(p.getID(), new PacketServerJoinError("Game is in progress")));
+							conn.close();
+							return;
+						}
+					}
+	
 					SRWeb.addPlayer(pl);
-					pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
-					pl.getRoom().rejoinPlayer(pl);
+					String sessID = SRWebSessionStore.createSession(pl);
+					r.addPlayer(pl);
+					pl.send(new Packet(p.getID(), new PacketServerRoomInfo(sessID, pl, r)));
+					return;
+				}catch(Exception e) {
+					conn.close(CloseFrame.POLICY_VALIDATION, "Invalid connect request");
 					return;
 				}
-				
-				String pName = con.getPlayerName().trim();
-				
-				if(pName.isEmpty()) {
-					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be empty")).toJSON().toString());
-					return;
-				}
-				
-				if(pName.length() > 20) {
-					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name cannot be longer than 20 characters")).toJSON().toString());
-					return;
-				}
-				
-				Matcher m = NAME_PATTERN.matcher(pName);
-				if(!m.matches()) {
-					conn.send(new Packet(p.getID(), new PacketServerJoinError("Name contains invalid characters")).toJSON().toString());
-					return;
-				}
-				
-				pl = new Player(conn, con.getPlayerName());
-				
-				Room r;
-				
-				if(con.isCreateRoom()) {
-					if(con.getRoomName() == null || con.getRoomName().isEmpty()) {
-						conn.close(CloseFrame.POLICY_VALIDATION);
-						return;
-					}
-					
-					if(!con.getRoomSettings().isValid()) {
-						pl.send(new Packet(p.getID(), new PacketServerJoinError("Invalid room settings")));
-						return;
-					}
-					
-					r = SRWeb.createRoom(con.getRoomName(), con.getRoomSettings());
-				}else {
-					if(con.getRoomID() == null || con.getRoomID().isEmpty()) {
-						conn.close(CloseFrame.POLICY_VALIDATION);
-						return;
-					}
-					
-					r = SRWeb.getRoom(con.getRoomID());
-					if(r == null) {
-						pl.send(new Packet(p.getID(), new PacketServerJoinError("Invalid room id")));
-						conn.close();
-						return;
-					}
-					
-					if(r.getPlayers().stream().anyMatch(o -> o.getName().toLowerCase().equals(pName.toLowerCase()))) {
-						conn.send(new Packet(p.getID(), new PacketServerJoinError("Name already taken")).toJSON().toString());
-						return;
-					}
-					
-					if(r.isFull()) {
-						pl.send(new Packet(p.getID(), new PacketServerJoinError("Room is full")));
-						conn.close();
-						return;
-					}
-					
-					if(r.isGameRunning()) {
-						pl.send(new Packet(p.getID(), new PacketServerJoinError("Game is in progress")));
-						conn.close();
-						return;
-					}
-				}
-
-				SRWeb.addPlayer(pl);
-				String sessID = SRWebSessionStore.createSession(pl);
-				r.addPlayer(pl);
-				pl.send(new Packet(p.getID(), new PacketServerRoomInfo(sessID, pl, r)));
-				return;
 			}else {
 				conn.close(CloseFrame.POLICY_VALIDATION, "Not a connect packet");
 				return;
