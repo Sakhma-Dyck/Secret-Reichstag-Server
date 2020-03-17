@@ -150,7 +150,7 @@ public class SRWeb {
 	
 	public static Player getPlayer(WebSocket socket) {
 		return players.stream()
-				.filter(p -> p.getWebSocket().equals(socket))
+				.filter(p -> p.getWebSocket() != null && p.getWebSocket().equals(socket))
 				.findFirst().orElse(null);
 	}
 	

@@ -126,9 +126,15 @@ public class SRWebSocketServer extends WebSocketServer {
 					}
 					
 					pl = sess.getPlayer();
+					
+					if(pl.isOnline()) {
+						conn.send(new Packet(p.getID(), new PacketServerJoinError("Session already in use")).toJSON().toString());
+						return;
+					}
+					
 					pl.setWebSocket(conn);
 					
-					if(SRWeb.getRoom(pl.getRoom().getID()) == null) {
+					if(pl.getRoom() == null || SRWeb.getRoom(pl.getRoom().getID()) == null) {
 						conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, room closed")).toJSON().toString());
 						return;
 					}

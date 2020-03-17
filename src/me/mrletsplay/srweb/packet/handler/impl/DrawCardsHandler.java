@@ -28,7 +28,6 @@ public class DrawCardsHandler extends SingleTypePacketHandler<PacketClientDrawCa
 			r.getGameState().setMoveState(GameMoveState.DISCARD_PRESIDENT);
 			r.broadcastStateUpdate();
 			player.send(new Packet(new PacketServerPickCards(drawnCards, false)));
-			System.out.println("DRAW: " + drawnCards);
 		}
 		return PacketServerNoData.INSTANCE;
 	}

@@ -133,7 +133,6 @@ public class Room implements JavaScriptConvertible {
 		
 		if((gameState.getMoveState().equals(GameMoveState.DISCARD_PRESIDENT) && player.equals(gameState.getPresident()))
 				|| (gameState.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR) && player.equals(gameState.getChancellor()))) {
-			System.out.println("DISCARD");
 			player.send(new Packet(new PacketServerPickCards(player.getHand(), gameState.isVetoBlocked())));
 		}
 		
@@ -162,8 +161,7 @@ public class Room implements JavaScriptConvertible {
 		
 		if(closeRoom) SRWeb.removeRoom(this);
 		players.forEach(p -> p.send(new Packet(new PacketServerPlayerLeft(player, hardLeave))));
-		if(gameRunning /*&& !gameState.isPlayerDead(player)*/) {
-//			stopGame();
+		if(gameRunning && !gameState.isPlayerDead(player)) {
 			pauseGame();
 		}
 		

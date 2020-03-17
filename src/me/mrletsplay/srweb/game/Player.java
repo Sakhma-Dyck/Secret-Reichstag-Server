@@ -70,6 +70,8 @@ public class Player implements JavaScriptConvertible {
 		this.webSocket = webSocket;
 	}
 	
+	@JSONValue("online")
+	@JavaScriptGetter("isOnline")
 	public boolean isOnline() {
 		return webSocket != null && webSocket.isOpen();
 	}

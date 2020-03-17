@@ -17,9 +17,7 @@ public class SRWebSessionStore {
 	}
 	
 	public static PlayerSession getSession(String sessionID) {
-		System.out.println(activeSessions);
 		updateSessions();
-		System.out.println("a: " + activeSessions);
 		return activeSessions.get(sessionID);
 	}
 	
