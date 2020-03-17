@@ -1,7 +1,6 @@
 package me.mrletsplay.srweb.util;
 
 import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -10,11 +9,8 @@ import java.util.regex.Pattern;
 import javax.net.ssl.SSLContext;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.exceptions.InvalidDataException;
 import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.handshake.ServerHandshakeBuilder;
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 
@@ -245,20 +241,6 @@ public class SRWebSocketServer extends WebSocketServer {
 	@Override
 	public void onStart() {
 		System.out.println("Server is listening on port " + getPort());
-	}
-	
-	@Override
-	public ServerHandshakeBuilder onWebsocketHandshakeReceivedAsServer(WebSocket conn, Draft draft,
-			ClientHandshake request) throws InvalidDataException {
-		System.out.println("HS RECEIVED");
-		return super.onWebsocketHandshakeReceivedAsServer(conn, draft, request);
-	}
-	
-	@Override
-	protected boolean onConnect(SelectionKey key) {
-		boolean b = super.onConnect(key);
-		System.out.println("ONCONNECT: " + b);
-		return b;
 	}
 	
 }
