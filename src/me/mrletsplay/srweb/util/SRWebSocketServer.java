@@ -129,9 +129,14 @@ public class SRWebSocketServer extends WebSocketServer {
 							return;
 						}
 						
+						if(pl.getRoom() == null) {
+							conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, player left normally")).toJSON().toString());
+							return;
+						}
+						
 						pl.setWebSocket(conn);
 						
-						if(pl.getRoom() == null || SRWeb.getRoom(pl.getRoom().getID()) == null) {
+						if(SRWeb.getRoom(pl.getRoom().getID()) == null) {
 							conn.send(new Packet(p.getID(), new PacketServerJoinError("Cannot rejoin, room closed")).toJSON().toString());
 							return;
 						}

@@ -17,6 +17,7 @@ public class PacketServerPlayerLeft extends PacketData {
 
 	public PacketServerPlayerLeft(Player player, boolean hardLeave) {
 		this.player = player;
+		this.hardLeave = hardLeave;
 	}
 	
 }
