@@ -32,7 +32,7 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 		GameState s = r.getGameState();
 		if(s.getPresident().equals(player) && s.getMoveState().equals(GameMoveState.DISCARD_PRESIDENT)) {
 			if(data.getDiscardIndex() < 0 || data.getDiscardIndex() > 2) return PacketServerNoData.INSTANCE;
-			GamePolicyCard c = player.getHand().remove(data.getDiscardIndex()); // NONBETA: IOOBExc
+			GamePolicyCard c = player.getHand().remove(data.getDiscardIndex());
 			s.getDiscardPile().add(0, c); // Put discarded card on top of the disc. pile
 			s.setMoveState(GameMoveState.DISCARD_CHANCELLOR);
 			
@@ -44,7 +44,7 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 			s.getChancellor().send(new Packet(new PacketServerPickCards(rCards, false)));
 		}else if(s.getChancellor().equals(player) && s.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR)) {
 			if(data.getDiscardIndex() < 0 || data.getDiscardIndex() > 1) return PacketServerNoData.INSTANCE;
-			GamePolicyCard c = player.getHand().remove(data.getDiscardIndex()); // NONBETA: IOOBExc
+			GamePolicyCard c = player.getHand().remove(data.getDiscardIndex());
 			s.getDiscardPile().add(0, c); // Put discarded card on top of the disc. pile
 			
 			GameBoardAction ac = null;

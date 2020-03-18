@@ -54,7 +54,7 @@ public class RoomSettings implements JavaScriptConvertible {
 	
 	public boolean isValid() {
 		return
-				playerCount >= 2 /* NONBETA */ && playerCount <= 14 &&
+				playerCount >= 7 && playerCount <= 14 &&
 				liberalCardCount >= 5 && liberalCardCount <= 15 &&
 				communistCardCount >= 6 && communistCardCount <= 15 &&
 				fascistCardCount >= 6 && fascistCardCount <= 15;

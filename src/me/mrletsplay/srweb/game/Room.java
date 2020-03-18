@@ -186,11 +186,6 @@ public class Room implements JavaScriptConvertible {
 			nCF = (players.size() - 2) / 3;
 		}
 		
-		if(players.size() == 2) { // NONBETA
-			nL = 0;
-			nCF = 1;
-		}
-		
 		List<Player> remainingPlayers = new ArrayList<>(players);
 		List<Player> liberals = new ArrayList<>();
 		List<Player> communists = new ArrayList<>();
@@ -304,13 +299,20 @@ public class Room implements JavaScriptConvertible {
 	}
 	
 	private String randomID() {
+		while(isIDTaken(id = genID()));
+		return id;
+	}
+	
+	private boolean isIDTaken(String id) {
+		return SRWeb.getRooms().stream().anyMatch(rm -> rm.getID().equals(id));
+	}
+	
+	private String genID() {
 		StringBuilder b = new StringBuilder();
-		for(int i = 0; i < 4; i++) { // NONBETA: longer ids
+		for(int i = 0; i < 6; i++) {
 			b.append(random.nextInt(10));
 		}
-		String id = b.toString();
-		if(SRWeb.getRooms().stream().anyMatch(rm -> rm.getID().equals(id))) return randomID();
-		return id;
+		return b.toString();
 	}
 	
 }
