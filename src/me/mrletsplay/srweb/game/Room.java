@@ -1,7 +1,9 @@
 package me.mrletsplay.srweb.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import me.mrletsplay.mrcore.json.converter.JSONValue;
@@ -186,6 +188,11 @@ public class Room implements JavaScriptConvertible {
 			nCF = (players.size() - 2) / 3;
 		}
 		
+		if(players.size() == 2) {
+			nL = 0;
+			nCF = 1;
+		}
+		
 		List<Player> remainingPlayers = new ArrayList<>(players);
 		List<Player> liberals = new ArrayList<>();
 		List<Player> communists = new ArrayList<>();
@@ -272,9 +279,16 @@ public class Room implements JavaScriptConvertible {
 	public void stopGame() {
 		if(!gameRunning) return;
 		gameRunning = false;
+		
+		Map<String, GameRole> roles = new HashMap<>();
+		
+		for(Player player : players) {
+			roles.put(player.getID(), gameState.getRole(player));
+		}
+		
 		gameState = new GameState(this);
 		
-		players.forEach(p -> p.send(new Packet(new PacketServerStopGame(winner))));		
+		players.forEach(p -> p.send(new Packet(new PacketServerStopGame(winner, roles))));		
 		if(winner != null) {
 			broadcastEventLogEntry(winner.getFriendlyName() + " win");
 		}else {
