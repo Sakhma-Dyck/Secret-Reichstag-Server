@@ -188,7 +188,7 @@ public class Room implements JavaScriptConvertible {
 			nCF = (players.size() - 2) / 3;
 		}
 		
-		if(players.size() == 2) {
+		if(players.size() == 2) { // NONBETA: debug
 			nL = 0;
 			nCF = 1;
 		}

@@ -20,6 +20,7 @@ import me.mrletsplay.mrcore.json.converter.JSONConverter;
 import me.mrletsplay.srweb.SRWeb;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
+import me.mrletsplay.srweb.game.state.GameMoveState;
 import me.mrletsplay.srweb.packet.ClassSerializer;
 import me.mrletsplay.srweb.packet.JavaScriptConvertible;
 import me.mrletsplay.srweb.packet.Packet;
@@ -33,7 +34,7 @@ import me.mrletsplay.srweb.session.SRWebSessionStore;
 
 public class SRWebSocketServer extends WebSocketServer {
 	
-	private static final Pattern NAME_PATTERN = Pattern.compile("(?:[a-zA-Z0-9äöü]){1,20}");
+	private static final Pattern NAME_PATTERN = Pattern.compile("(?:[a-zA-Z0-9äöü ]){1,20}");
 	
 	private List<PacketHandler> handlers;
 	
@@ -142,7 +143,14 @@ public class SRWebSocketServer extends WebSocketServer {
 						}
 						
 						SRWeb.addPlayer(pl);
-						pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
+						PacketServerRoomInfo rI = new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom());
+						
+						if(pl.getRoom().isGameRunning() && pl.getRoom().getGameState().getMoveState().equals(GameMoveState.VOTE)
+								&& pl.getRoom().getGameState().getVoteState().getVote(pl) != null) {
+							rI.setVoteDone(true);
+						}
+						
+						pl.send(new Packet(p.getID(), rI));
 						pl.getRoom().rejoinPlayer(pl);
 						return;
 					}

@@ -20,10 +20,18 @@ public class PacketServerRoomInfo extends PacketData {
 	@JavaScriptGetter("getRoom")
 	private Room room;
 	
+	@JSONValue
+	@JavaScriptGetter("isVoteDone")
+	private boolean voteDone;
+	
 	public PacketServerRoomInfo(String sessionID, Player selfPlayer, Room room) {
 		this.sessionID = sessionID;
 		this.selfPlayer = selfPlayer;
 		this.room = room;
+	}
+	
+	public void setVoteDone(boolean voteDone) {
+		this.voteDone = voteDone;
 	}
 	
 }
