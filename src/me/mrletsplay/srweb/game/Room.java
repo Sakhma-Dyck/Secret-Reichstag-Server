@@ -185,21 +185,27 @@ public class Room implements JavaScriptConvertible {
 		
 		int nL = 0, nCF = 0;
 		
-		int r = players.size() % 3;
-		if(r == 0) {
-			nL = players.size() / 3 + 2;
-			nCF = players.size() / 3 - 1;
-		} else if(r == 1) {
-			nL = (players.size() - 1) / 3 + 1;
-			nCF = (players.size() - 1) / 3;
-		} else if(r == 2) {
-			nL = (players.size() - 2) / 3 + 2;
-			nCF = (players.size() - 2) / 3;
-		}
-		
-		if(players.size() == 2) { // NONBETA: debug
-			nL = 0;
-			nCF = 1;
+		if(mode == GameMode.SECRET_REICHSTAG) {
+			int r = players.size() % 3;
+			if(r == 0) {
+				nL = players.size() / 3 + 2;
+				nCF = players.size() / 3 - 1;
+			} else if(r == 1) {
+				nL = (players.size() - 1) / 3 + 1;
+				nCF = (players.size() - 1) / 3;
+			} else if(r == 2) {
+				nL = (players.size() - 2) / 3 + 2;
+				nCF = (players.size() - 2) / 3;
+			}
+		}else if(mode == GameMode.SECRET_HITLER) {
+			int r = players.size() % 2;
+			if(r == 0) {
+				nL = players.size() / 2 + 1;
+				nCF = players.size() / 2 - 1;
+			} else if(r == 1) {
+				nL = (players.size() - 1) / 2 + 1;
+				nCF = (players.size() - 1) / 2;
+			}
 		}
 		
 		List<Player> remainingPlayers = new ArrayList<>(players);
@@ -211,11 +217,14 @@ public class Room implements JavaScriptConvertible {
 			liberals.add(remainingPlayers.remove(random.nextInt(remainingPlayers.size())));
 		}
 		
-		for(int i = 0; i < nCF; i++) {
-			communists.add(remainingPlayers.remove(random.nextInt(remainingPlayers.size())));
+		Player stalin = null;
+		if(mode == GameMode.SECRET_REICHSTAG) {
+			for(int i = 0; i < nCF; i++) {
+				communists.add(remainingPlayers.remove(random.nextInt(remainingPlayers.size())));
+			}
+			
+			stalin = communists.remove(random.nextInt(communists.size()));
 		}
-		
-		Player stalin = communists.remove(random.nextInt(communists.size()));
 		
 		for(int i = 0; i < nCF; i++) {
 			fascists.add(remainingPlayers.remove(random.nextInt(remainingPlayers.size())));
@@ -237,7 +246,7 @@ public class Room implements JavaScriptConvertible {
 		// shows players what they're supposed to see
 		liberals.forEach(l -> l.send(new Packet(getStartPackage(GameRole.LIBERAL))));
 		
-		stalin.send(new Packet(getStartPackage(GameRole.STALIN)));
+		if(stalin != null) stalin.send(new Packet(getStartPackage(GameRole.STALIN)));
 		communists.forEach(l -> l.send(new Packet(getStartPackage(GameRole.COMMUNIST))));
 		
 		hitler.send(new Packet(getStartPackage(GameRole.HITLER)));
