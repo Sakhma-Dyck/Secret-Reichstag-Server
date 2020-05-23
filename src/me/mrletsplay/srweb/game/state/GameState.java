@@ -411,7 +411,7 @@ public class GameState implements JavaScriptConvertible {
 	
 	public void advanceRound(boolean advancePresident) {
 		setMoveState(GameMoveState.SELECT_CHANCELLOR);
-		if(room.getPlayers().size() >= 8) previousPresident = president;
+		if(room.getPlayers().size() >= room.getMode().getMinPrevPresident()) previousPresident = president;
 		previousChancellor = chancellor;
 		chancellor = null;
 		if(advancePresident) advancePresident();
