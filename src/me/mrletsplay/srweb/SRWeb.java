@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.java_websocket.WebSocket;
 
+import me.mrletsplay.srweb.game.GameMode;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
 import me.mrletsplay.srweb.game.RoomSettings;
@@ -112,7 +113,8 @@ public class SRWeb {
 				ActionInspectPlayerResult.class,
 				ActionExamineTopCardsOther.class,
 				ActionPickPresident.class,
-				ActionBlockPlayer.class
+				ActionBlockPlayer.class,
+				GameMode.class
 			);
 	
 	public static final List<PacketHandler> PACKET_HANDLERS = Arrays.asList(
@@ -151,8 +153,8 @@ public class SRWeb {
 		return players;
 	}
 	
-	public static Room createRoom(String name, RoomSettings settings) {
-		Room r = new Room(name, settings);
+	public static Room createRoom(String name, GameMode mode, RoomSettings settings) {
+		Room r = new Room(name, mode, settings);
 		rooms.add(r);
 		return r;
 	}

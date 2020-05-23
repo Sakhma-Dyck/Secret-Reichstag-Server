@@ -41,6 +41,10 @@ public class Room implements JavaScriptConvertible {
 	private String name;
 	
 	@JSONValue
+	@JavaScriptGetter("getMode")
+	private GameMode mode;
+	
+	@JSONValue
 	@JavaScriptGetter("getPlayers")
 	private List<Player> players;
 	
@@ -67,10 +71,11 @@ public class Room implements JavaScriptConvertible {
 	@JavaScriptGetter("getWinner")
 	private GameParty winner;
 	
-	public Room(String name, RoomSettings settings) {
+	public Room(String name, GameMode mode, RoomSettings settings) {
 		this.random = new Random();
 		this.id = randomID();
 		this.name = name;
+		this.mode = mode;
 		this.players = new ArrayList<>();
 		this.settings = settings;
 		this.gameState = new GameState(this);
@@ -82,6 +87,10 @@ public class Room implements JavaScriptConvertible {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public GameMode getMode() {
+		return mode;
 	}
 	
 	public List<Player> getPlayers() {

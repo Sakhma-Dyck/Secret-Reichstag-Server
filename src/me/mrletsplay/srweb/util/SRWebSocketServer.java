@@ -18,6 +18,7 @@ import me.mrletsplay.mrcore.json.JSONArray;
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.converter.JSONConverter;
 import me.mrletsplay.srweb.SRWeb;
+import me.mrletsplay.srweb.game.GameMode;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
 import me.mrletsplay.srweb.game.state.GameMoveState;
@@ -188,7 +189,7 @@ public class SRWebSocketServer extends WebSocketServer {
 							return;
 						}
 						
-						r = SRWeb.createRoom(con.getRoomName(), con.getRoomSettings());
+						r = SRWeb.createRoom(con.getRoomName(), GameMode.valueOf(con.getRoomSettings().getMode()), con.getRoomSettings());
 					}else {
 						if(con.getRoomID() == null || con.getRoomID().isEmpty()) {
 							conn.close(CloseFrame.POLICY_VALIDATION);

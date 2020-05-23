@@ -60,7 +60,7 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 					break;
 			}
 			
-			if(s.getFascistBoard().getNumCards() == 5 || s.getCommunistBoard().getNumCards() == 5) {
+			if(s.getFascistBoard().getNumCards() == 5 || (s.getCommunistBoard() != null && s.getCommunistBoard().getNumCards() == 5)) {
 				s.setVetoPowerUnlocked(true);
 			}
 			

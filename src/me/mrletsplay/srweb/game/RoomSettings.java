@@ -7,6 +7,11 @@ import me.mrletsplay.srweb.packet.JavaScriptGetter;
 import me.mrletsplay.srweb.packet.JavaScriptSetter;
 
 public class RoomSettings implements JavaScriptConvertible {
+	
+	@JSONValue
+	@JavaScriptSetter("setMode")
+	@JavaScriptGetter("getMode")
+	private String mode;
 
 	@JSONValue
 	@JavaScriptSetter("setPlayerCount")
@@ -30,10 +35,15 @@ public class RoomSettings implements JavaScriptConvertible {
 	
 	@JSONConstructor
 	public RoomSettings() {
+		this.mode = GameMode.SECRET_REICHSTAG.name();
 		this.playerCount = 7;
 		this.liberalCardCount = 9;
 		this.communistCardCount = 11;
 		this.fascistCardCount = 11;
+	}
+	
+	public String getMode() {
+		return mode;
 	}
 	
 	public int getPlayerCount() {
@@ -53,11 +63,15 @@ public class RoomSettings implements JavaScriptConvertible {
 	}
 	
 	public boolean isValid() {
-		return
-				playerCount >= 2 && playerCount <= 14 &&
-				liberalCardCount >= 5 && liberalCardCount <= 15 &&
-				communistCardCount >= 6 && communistCardCount <= 15 &&
-				fascistCardCount >= 6 && fascistCardCount <= 15;
+		try {
+			GameMode m = GameMode.valueOf(mode);
+			return playerCount >= m.getMinPlayers() && playerCount <= m.getMaxPlayers() &&
+					liberalCardCount >= 5 && liberalCardCount <= 15 &&
+					((communistCardCount >= 6 && communistCardCount <= 15) || m == GameMode.SECRET_HITLER) &&
+					fascistCardCount >= 6 && fascistCardCount <= 15;
+		}catch(IllegalArgumentException | NullPointerException e) {
+			return false;
+		}
 	}
 	
 }

@@ -50,7 +50,7 @@ public class VoteHandler extends SingleTypePacketHandler<PacketClientVote> {
 					}
 					
 					
-					if(s.getCommunistBoard().getNumCards() >= 3) {
+					if(s.getCommunistBoard() != null && s.getCommunistBoard().getNumCards() >= 3) {
 						if(s.getChancellor().equals(s.getStalin())) {
 							r.setWinner(GameParty.COMMUNIST);
 							r.stopGame();

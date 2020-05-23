@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import me.mrletsplay.mrcore.json.converter.JSONValue;
+import me.mrletsplay.srweb.game.GameMode;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
 import me.mrletsplay.srweb.game.state.board.GameBoard;
@@ -111,36 +112,58 @@ public class GameState implements JavaScriptConvertible {
 		
 		int numPlayers = room.getSettings().getPlayerCount();
 		
-		if(numPlayers <= 8) {
-			this.communistBoard = new GameBoard(6,
-					new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
-					new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
-					new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-					new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
-			this.fascistBoard = new GameBoard(6,
-					new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
-					new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
-					new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-					new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
-		}else if(numPlayers >= 9) {
-			this.communistBoard = new GameBoard(6,
-					new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
-					new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
-					new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
-					new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-					new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
-			this.fascistBoard = new GameBoard(6,
-					new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
-					new GameBoardActionField(1, GameBoardAction.PICK_PRESIDENT),
-					new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
-					new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-					new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+		if(room.getMode() == GameMode.SECRET_REICHSTAG) {
+			if(numPlayers <= 8) {
+				this.communistBoard = new GameBoard(6,
+						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
+						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				this.fascistBoard = new GameBoard(6,
+						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
+						new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+			}else if(numPlayers >= 9) {
+				this.communistBoard = new GameBoard(6,
+						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
+						new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				this.fascistBoard = new GameBoard(6,
+						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+						new GameBoardActionField(1, GameBoardAction.PICK_PRESIDENT),
+						new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+			}
+		}else {
+			if(numPlayers <= 6) {
+				this.fascistBoard = new GameBoard(6,
+						new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+			}else if(numPlayers <= 8) {
+				this.fascistBoard = new GameBoard(6,
+						new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
+						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+			}else {
+				this.fascistBoard = new GameBoard(6,
+						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+						new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
+						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+			}
 		}
 		
 		this.drawPile = new ArrayList<>();
-		for(int i = 0; i < 11; i++) drawPile.add(GamePolicyCard.COMMUNIST);
-		for(int i = 0; i < 11; i++) drawPile.add(GamePolicyCard.FASCIST);
-		for(int i = 0; i < 9; i++) drawPile.add(GamePolicyCard.LIBERAL);
+		for(int i = 0; i < room.getSettings().getCommunistCardCount(); i++) drawPile.add(GamePolicyCard.COMMUNIST);
+		for(int i = 0; i < room.getSettings().getFascistCardCount(); i++) drawPile.add(GamePolicyCard.FASCIST);
+		for(int i = 0; i < room.getSettings().getLiberalCardCount(); i++) drawPile.add(GamePolicyCard.LIBERAL);
 		Collections.shuffle(drawPile);
 		
 		this.discardPile = new ArrayList<>();
