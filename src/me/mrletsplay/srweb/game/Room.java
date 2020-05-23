@@ -260,11 +260,11 @@ public class Room implements JavaScriptConvertible {
 			case LIBERAL:
 				return new PacketServerStartGame(GameRole.LIBERAL, null, null);
 			case STALIN:
-				return new PacketServerStartGame(GameRole.STALIN, null, players.size() > 9 ? null : gameState.getCommunists());
+				return new PacketServerStartGame(GameRole.STALIN, null, players.size() >= mode.getMinInvisible() ? null : gameState.getCommunists());
 			case COMMUNIST:
 				return new PacketServerStartGame(GameRole.COMMUNIST, gameState.getStalin(), gameState.getCommunists());
 			case HITLER:
-				return new PacketServerStartGame(GameRole.HITLER, null, players.size() > 9 ? null : gameState.getFascists());
+				return new PacketServerStartGame(GameRole.HITLER, null, players.size() >= mode.getMinInvisible() ? null : gameState.getFascists());
 			case FASCIST:
 				return new PacketServerStartGame(GameRole.FASCIST, gameState.getHitler(), gameState.getFascists());
 			default:
