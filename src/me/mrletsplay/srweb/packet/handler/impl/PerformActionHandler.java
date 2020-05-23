@@ -1,5 +1,6 @@
 package me.mrletsplay.srweb.packet.handler.impl;
 
+import me.mrletsplay.srweb.game.GameMode;
 import me.mrletsplay.srweb.game.Player;
 import me.mrletsplay.srweb.game.Room;
 import me.mrletsplay.srweb.game.state.GameMoveState;
@@ -53,7 +54,7 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 						s.addNotHitlerConfirmed(p);
 					}
 					
-					if(!p.equals(s.getStalin())) {
+					if(r.getMode() != GameMode.SECRET_HITLER && !p.equals(s.getStalin())) {
 						s.addNotStalinConfirmed(p);
 					}
 					
