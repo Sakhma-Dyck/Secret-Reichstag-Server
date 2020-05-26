@@ -432,6 +432,7 @@ public class GameState implements JavaScriptConvertible {
 			drawPile.addAll(discardPile);
 			discardPile.clear();
 			Collections.shuffle(drawPile);
+			room.broadcastEventLogEntry("The card pile has been shuffled");
 		}
 		
 		return ret;
