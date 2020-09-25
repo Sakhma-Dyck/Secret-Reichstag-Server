@@ -18,8 +18,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.xml.bind.DatatypeConverter;
 
+import jakarta.xml.bind.DatatypeConverter;
 import me.mrletsplay.mrcore.misc.FriendlyException;
 
 public class SSLHelper {
