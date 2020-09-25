@@ -39,13 +39,13 @@ public class SRWebSocketServer extends WebSocketServer {
 	
 	private List<PacketHandler> handlers;
 	
-	public SRWebSocketServer(InetSocketAddress address) {
+	public SRWebSocketServer(InetSocketAddress address, boolean enableSSL) {
 		super(address);
 		this.handlers = new ArrayList<>();
 		setReuseAddr(true);
 		setTcpNoDelay(true);
 		
-		if(SRWebConfig.isEnableSSL()) {
+		if(enableSSL) {
 			SSLContext ctx = SSLHelper.getContext();
 			setWebSocketFactory(new DefaultSSLWebSocketServerFactory(ctx));
 			System.out.println("Successfully enabled SSL");
