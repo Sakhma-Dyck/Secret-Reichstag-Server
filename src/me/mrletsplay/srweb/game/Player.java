@@ -11,6 +11,7 @@ import me.mrletsplay.srweb.game.state.GamePolicyCard;
 import me.mrletsplay.srweb.game.state.board.action.GameActionData;
 import me.mrletsplay.srweb.packet.JavaScriptConvertible;
 import me.mrletsplay.srweb.packet.JavaScriptGetter;
+import me.mrletsplay.srweb.packet.JavaScriptSetter;
 import me.mrletsplay.srweb.packet.Packet;
 
 public class Player implements JavaScriptConvertible {
@@ -72,6 +73,7 @@ public class Player implements JavaScriptConvertible {
 	
 	@JSONValue("online")
 	@JavaScriptGetter("isOnline")
+	@JavaScriptSetter("setOnline")
 	public boolean isOnline() {
 		return webSocket != null && webSocket.isOpen();
 	}

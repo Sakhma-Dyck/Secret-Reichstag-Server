@@ -15,21 +15,17 @@ public class PacketServerStopGame extends PacketData {
 	@JavaScriptGetter("getWinner")
 	private GameParty winner;
 	
-	private Map<String, GameRole> roles;
+	@JSONValue
+	@JavaScriptGetter("getRoles")
+	private JSONObject roles;
 
 	public PacketServerStopGame(GameParty winner, Map<String, GameRole> roles) {
 		this.winner = winner;
-		this.roles = roles;
-	}
-	
-	@Override
-	public void preSerialize(JSONObject object) {
-		super.preSerialize(object);
 		JSONObject rs = new JSONObject();
 		roles.forEach((k, v) -> {
 			rs.put(k, v.toJSON());
 		});
-		object.put("roles", rs);
+		this.roles = rs;
 	}
 	
 }
