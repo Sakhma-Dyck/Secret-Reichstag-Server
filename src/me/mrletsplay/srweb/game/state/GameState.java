@@ -110,7 +110,26 @@ public class GameState implements JavaScriptConvertible {
 		this.room = room;
 		this.liberalBoard = new GameBoard(5);
 		
-		int numPlayers = room.getSettings().getPlayerCount();
+		updateGameBoards();
+		
+		this.drawPile = new ArrayList<>();
+		for(int i = 0; i < room.getSettings().getCommunistCardCount(); i++) drawPile.add(GamePolicyCard.COMMUNIST);
+		for(int i = 0; i < room.getSettings().getFascistCardCount(); i++) drawPile.add(GamePolicyCard.FASCIST);
+		for(int i = 0; i < room.getSettings().getLiberalCardCount(); i++) drawPile.add(GamePolicyCard.LIBERAL);
+		Collections.shuffle(drawPile);
+		
+		this.discardPile = new ArrayList<>();
+		
+		this.liberals = new ArrayList<>();
+		this.communists = new ArrayList<>();
+		this.fascists = new ArrayList<>();
+		this.deadPlayers = new ArrayList<>();
+		this.notStalinConfirmed = new ArrayList<>();
+		this.notHitlerConfirmed = new ArrayList<>();
+	}
+	
+	public void updateGameBoards() {
+		int numPlayers = room.getPlayers().size();
 		
 		if(room.getMode() == GameMode.SECRET_REICHSTAG) {
 			if(numPlayers <= 8) {
@@ -159,21 +178,6 @@ public class GameState implements JavaScriptConvertible {
 						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
 			}
 		}
-		
-		this.drawPile = new ArrayList<>();
-		for(int i = 0; i < room.getSettings().getCommunistCardCount(); i++) drawPile.add(GamePolicyCard.COMMUNIST);
-		for(int i = 0; i < room.getSettings().getFascistCardCount(); i++) drawPile.add(GamePolicyCard.FASCIST);
-		for(int i = 0; i < room.getSettings().getLiberalCardCount(); i++) drawPile.add(GamePolicyCard.LIBERAL);
-		Collections.shuffle(drawPile);
-		
-		this.discardPile = new ArrayList<>();
-		
-		this.liberals = new ArrayList<>();
-		this.communists = new ArrayList<>();
-		this.fascists = new ArrayList<>();
-		this.deadPlayers = new ArrayList<>();
-		this.notStalinConfirmed = new ArrayList<>();
-		this.notHitlerConfirmed = new ArrayList<>();
 	}
 	
 	public Room getRoom() {

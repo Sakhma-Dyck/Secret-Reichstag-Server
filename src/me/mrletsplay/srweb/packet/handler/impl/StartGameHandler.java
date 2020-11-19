@@ -18,7 +18,7 @@ public class StartGameHandler extends SingleTypePacketHandler<PacketClientStartG
 	public PacketData handleSingle(Player player, Packet packet, PacketClientStartGame data) {
 		Room r = player.getRoom();
 
-		if(!r.isGameRunning() && r.getPlayers().size() >= r.getSettings().getPlayerCount()) {
+		if(!r.isGameRunning() && r.getPlayers().size() >= r.getSettings().getMinPlayerCount()) {
 			r.startGame();
 			r.broadcastEventLogEntry("Game started!");
 			r.broadcastEventLogEntry("The first president is " + r.getGameState().getPresident().getName());

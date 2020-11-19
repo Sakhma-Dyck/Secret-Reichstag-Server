@@ -130,6 +130,9 @@ public class Room implements JavaScriptConvertible {
 		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player, false))));
 		players.add(player);
 		
+		gameState.updateGameBoards();
+		broadcastStateUpdate();
+		
 		broadcastEventLogEntry(player.getName() + " joined");
 	}
 	
@@ -279,7 +282,7 @@ public class Room implements JavaScriptConvertible {
 	}
 	
 	public boolean isFull() {
-		return players.size() >= settings.getPlayerCount();
+		return players.size() >= settings.getMaxPlayerCount();
 	}
 	
 	public void pauseGame() {
