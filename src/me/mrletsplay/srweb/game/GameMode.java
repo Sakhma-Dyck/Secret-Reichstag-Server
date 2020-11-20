@@ -1,15 +1,23 @@
 package me.mrletsplay.srweb.game;
 
+import me.mrletsplay.mrcore.json.converter.JSONValue;
 import me.mrletsplay.srweb.packet.JavaScriptEnum;
+import me.mrletsplay.srweb.packet.JavaScriptGetter;
 
 public enum GameMode implements JavaScriptEnum {
 	
 	SECRET_HITLER(5, 10, 7, 6),
 	SECRET_REICHSTAG(7, 14, 10, 8);
 	
+	@JSONValue
+	@JavaScriptGetter("getMinPlayers")
+	private final int minPlayers;
+	
+	@JSONValue
+	@JavaScriptGetter("getMaxPlayers")
+	private final int maxPlayers;
+	
 	private final int
-		minPlayers,
-		maxPlayers,
 		minInvisible,
 		minPrevPresident;
 
