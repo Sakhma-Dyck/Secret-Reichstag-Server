@@ -179,6 +179,11 @@ public class Room implements JavaScriptConvertible {
 			pauseGame();
 		}
 		
+		if(!gameRunning) {
+			gameState.updateGameBoards();
+			broadcastStateUpdate();
+		}
+		
 		broadcastEventLogEntry(player.getName() + " left");
 	}
 	
