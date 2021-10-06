@@ -3,15 +3,20 @@ package me.mrletsplay.srweb;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import me.mrletsplay.srweb.game.Player;
+import me.mrletsplay.srweb.packet.Packet;
 import me.mrletsplay.srweb.util.SRWebConfig;
 import me.mrletsplay.srweb.util.SRWebSocketServer;
 
 public class SRWebMain {
 	
+	private static SRWebSocketServer
+		serverInsecure,
+		serverSecure;
+	
 	public static void main(String[] args) throws IOException {
-		SRWebSocketServer
-			serverInsecure = new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34642), false),
-			serverSecure = SRWebConfig.isEnableSSL() ? new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34643), true) : null;
+		serverInsecure = new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34642), false);
+		serverSecure = SRWebConfig.isEnableSSL() ? new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34643), true) : null;
 		
 		SRWeb.PACKET_HANDLERS.forEach(p -> {
 			serverInsecure.addHandler(p);
@@ -35,5 +40,18 @@ public class SRWebMain {
 		}));
 		System.out.println("Server is online");
 	}
-
+	
+	public static SRWebSocketServer getInsecureServer() {
+		return serverInsecure;
+	}
+	
+	public static SRWebSocketServer getSecureServer() {
+		return serverSecure;
+	}
+	
+	public static void handlePacket(Player player, Packet packet) {
+		serverInsecure.handlePacket(player, packet);
+		if(serverSecure != null) serverSecure.handlePacket(player, packet);
+	}
+	
 }

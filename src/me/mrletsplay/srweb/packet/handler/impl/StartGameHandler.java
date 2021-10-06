@@ -19,8 +19,8 @@ public class StartGameHandler extends SingleTypePacketHandler<PacketClientStartG
 		Room r = player.getRoom();
 
 		if(!r.isGameRunning() && r.getPlayers().size() >= r.getSettings().getMinPlayerCount()) {
-			r.startGame();
 			r.broadcastEventLogEntry("Game started!");
+			r.startGame();
 			r.broadcastEventLogEntry("The first president is " + r.getGameState().getPresident().getName());
 		}
 		

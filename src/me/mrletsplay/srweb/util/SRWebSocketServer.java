@@ -91,7 +91,7 @@ public class SRWebSocketServer extends WebSocketServer {
 
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		System.out.println("Disconnect from " + conn.getRemoteSocketAddress() + " (code: " + code + ")");
+		System.out.println("Disconnect from " + conn.getRemoteSocketAddress() + " (code: " + code + ", remote: " + remote + ", reason: " + reason + ")");
 		Player p = SRWeb.getPlayer(conn);
 		if(p != null) {
 			p.setWebSocket(null);
@@ -236,20 +236,7 @@ public class SRWebSocketServer extends WebSocketServer {
 			}
 		}
 		
-		for(PacketHandler handler : handlers) {
-			if(handler.shouldHandle(p)) {
-				try {
-					SRWebContext.setCurrentPlayer(pl);
-					pl.send(new Packet(p.getID(), handler.handle(pl, p, p.getData())));
-				}catch(Exception e) {
-					e.printStackTrace();
-					conn.close(CloseFrame.POLICY_VALIDATION, "Exception in handler");
-				}
-				return;
-			}
-		}
-		
-		conn.close(CloseFrame.POLICY_VALIDATION, "No handler available");
+		handlePacket(pl, p);
 	}
 
 	@Override
@@ -260,6 +247,24 @@ public class SRWebSocketServer extends WebSocketServer {
 	@Override
 	public void onStart() {
 		System.out.println("Server is listening on port " + getPort());
+	}
+	
+	public void handlePacket(Player player, Packet packet) {
+		for(PacketHandler handler : handlers) {
+			if(handler.shouldHandle(packet)) {
+				try {
+					SRWebContext.setCurrentPlayer(player);
+					player.send(new Packet(packet.getID(), handler.handle(player, packet, packet.getData())));
+				}catch(Exception e) {
+					e.printStackTrace();
+					if(player.getWebSocket() != null) player.getWebSocket().close(CloseFrame.POLICY_VALIDATION, "Exception in handler");
+				}
+				return;
+			}
+		}
+
+		
+		if(player.getWebSocket() != null) player.getWebSocket().close(CloseFrame.POLICY_VALIDATION, "No handler available");
 	}
 	
 }

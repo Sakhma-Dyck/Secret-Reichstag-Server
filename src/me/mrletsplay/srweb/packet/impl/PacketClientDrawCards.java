@@ -6,6 +6,6 @@ import me.mrletsplay.srweb.packet.PacketData;
 public class PacketClientDrawCards extends PacketData {
 	
 	@JSONConstructor
-	private PacketClientDrawCards() {}
+	public PacketClientDrawCards() {}
 	
 }

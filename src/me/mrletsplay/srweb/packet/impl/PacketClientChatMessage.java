@@ -13,6 +13,10 @@ public class PacketClientChatMessage extends PacketData {
 	
 	@JSONConstructor
 	private PacketClientChatMessage() {}
+	
+	public PacketClientChatMessage(String message) {
+		this.message = message;
+	}
 
 	public String getMessage() {
 		return message;

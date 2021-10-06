@@ -16,7 +16,7 @@ public class DisconnectHandler extends SingleTypePacketHandler<PacketDisconnect>
 	@Override
 	public PacketData handleSingle(Player player, Packet packet, PacketDisconnect data) {
 		SRWeb.removePlayer(player);
-		player.getWebSocket().close();
+		if(player.getWebSocket() != null) player.getWebSocket().close();
 		return null;
 	}
 

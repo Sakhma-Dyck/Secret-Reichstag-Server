@@ -18,8 +18,8 @@ public enum GameMode implements JavaScriptEnum {
 	private final int maxPlayers;
 	
 	private final int
-		minInvisible,
-		minPrevPresident;
+		minInvisible, // Minimum number of players required for Hitler/Stalin to not see their colleagues
+		minPrevPresident; // Minimum number of players required to block "Previous President"s from being proposed as chancellor
 
 	private GameMode(int minPlayers, int maxPlayers, int minInvisible, int minPrevPresident) {
 		this.minPlayers = minPlayers;

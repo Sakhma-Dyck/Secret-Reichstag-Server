@@ -31,12 +31,12 @@ public class SelectChancellorHandler extends SingleTypePacketHandler<PacketClien
 					|| ch.equals(s.getPresident())
 					|| s.isPlayerDead(ch)) return PacketServerNoData.INSTANCE;
 			
+			r.broadcastEventLogEntry(player.getName() + " proposes " + ch.getName() + " as chancellor");
+			
 			s.setChancellor(ch);
 			s.setMoveState(GameMoveState.VOTE);
 			s.setVoteState(new VoteState(s));
 			r.broadcastStateUpdate();
-			
-			r.broadcastEventLogEntry(player.getName() + " proposes " + ch.getName() + " as chancellor");
 		}
 		
 		return PacketServerNoData.INSTANCE;

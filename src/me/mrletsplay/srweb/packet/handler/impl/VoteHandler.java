@@ -75,6 +75,7 @@ public class VoteHandler extends SingleTypePacketHandler<PacketClientVote> {
 					s.addFailedElection();
 					
 					if(s.getFailedElections() == 3) {
+						r.broadcastEventLogEntry("The top card of the card pile will be put on the board because of too many failed elections");
 						s.randomCard();
 						s.resetFailedElections();
 					}

@@ -12,6 +12,10 @@ public class ActionInspectPlayer extends GameActionData {
 	
 	@JSONConstructor
 	private ActionInspectPlayer() {}
+	
+	public ActionInspectPlayer(String playerID) {
+		this.playerID = playerID;
+	}
 
 	public String getPlayerID() {
 		return playerID;

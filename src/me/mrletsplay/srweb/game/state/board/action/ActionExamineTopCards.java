@@ -15,5 +15,9 @@ public class ActionExamineTopCards extends GameActionData {
 	public ActionExamineTopCards(List<GamePolicyCard> cards) {
 		this.cards = cards;
 	}
+	
+	public List<GamePolicyCard> getCards() {
+		return cards;
+	}
 
 }

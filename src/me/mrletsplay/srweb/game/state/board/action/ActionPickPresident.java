@@ -12,6 +12,10 @@ public class ActionPickPresident extends GameActionData {
 	
 	@JSONConstructor
 	private ActionPickPresident() {}
+	
+	public ActionPickPresident(String playerID) {
+		this.playerID = playerID;
+	}
 
 	public String getPlayerID() {
 		return playerID;

@@ -13,8 +13,12 @@ public class PacketClientPerformAction extends PacketData {
 	private GameActionData data;
 	
 	@JSONConstructor
-	private PacketClientPerformAction() {}
+	public PacketClientPerformAction() {}
 	
+	public PacketClientPerformAction(GameActionData data) {
+		this.data = data;
+	}
+
 	public GameActionData getData() {
 		return data;
 	}

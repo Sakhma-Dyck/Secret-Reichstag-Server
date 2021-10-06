@@ -13,6 +13,10 @@ public class PacketClientVote extends PacketData {
 	
 	@JSONConstructor
 	private PacketClientVote() {}
+	
+	public PacketClientVote(boolean yes) {
+		this.yes = yes;
+	}
 
 	public boolean isYes() {
 		return yes;

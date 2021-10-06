@@ -13,6 +13,10 @@ public class ActionExamineTopCardsOther extends GameActionData {
 	@JSONConstructor
 	private ActionExamineTopCardsOther() {}
 
+	public ActionExamineTopCardsOther(String playerID) {
+		this.playerID = playerID;
+	}
+
 	public String getPlayerID() {
 		return playerID;
 	}

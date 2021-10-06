@@ -12,6 +12,10 @@ public class ActionKillPlayer extends GameActionData {
 	
 	@JSONConstructor
 	private ActionKillPlayer() {}
+	
+	public ActionKillPlayer(String playerID) {
+		this.playerID = playerID;
+	}
 
 	public String getPlayerID() {
 		return playerID;

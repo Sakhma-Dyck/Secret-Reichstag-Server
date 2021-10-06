@@ -14,6 +14,10 @@ public class PacketClientDiscardCard extends PacketData {
 	@JSONConstructor
 	private PacketClientDiscardCard() {}
 	
+	public PacketClientDiscardCard(int discardIndex) {
+		this.discardIndex = discardIndex;
+	}
+
 	public int getDiscardIndex() {
 		return discardIndex;
 	}

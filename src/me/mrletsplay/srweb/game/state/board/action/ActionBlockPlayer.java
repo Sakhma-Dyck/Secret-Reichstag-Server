@@ -12,6 +12,10 @@ public class ActionBlockPlayer extends GameActionData {
 	
 	@JSONConstructor
 	private ActionBlockPlayer() {}
+	
+	public ActionBlockPlayer(String playerID) {
+		this.playerID = playerID;
+	}
 
 	public String getPlayerID() {
 		return playerID;

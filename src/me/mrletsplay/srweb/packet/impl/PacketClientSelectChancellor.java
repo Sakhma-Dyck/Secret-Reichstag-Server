@@ -14,6 +14,10 @@ public class PacketClientSelectChancellor extends PacketData {
 	@JSONConstructor
 	private PacketClientSelectChancellor() {}
 	
+	public PacketClientSelectChancellor(String playerID) {
+		this.playerID = playerID;
+	}
+
 	public String getPlayerID() {
 		return playerID;
 	}

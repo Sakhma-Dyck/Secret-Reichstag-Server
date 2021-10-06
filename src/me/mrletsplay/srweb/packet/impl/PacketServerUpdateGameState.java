@@ -15,4 +15,8 @@ public class PacketServerUpdateGameState extends PacketData {
 		this.newState = newState;
 	}
 	
+	public GameState getNewState() {
+		return newState;
+	}
+	
 }

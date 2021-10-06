@@ -464,7 +464,7 @@ public class GameState implements JavaScriptConvertible {
 				break;
 		}
 		
-		if(ac.equals(GameBoardAction.WIN)) {
+		if(ac != null && ac.equals(GameBoardAction.WIN)) {
 			room.setWinner(card.getParty());
 			room.stopGame();
 		}

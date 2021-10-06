@@ -21,5 +21,13 @@ public class PacketServerPickCards extends PacketData {
 		this.cards = cards;
 		this.vetoBlocked = vetoBlocked;
 	}
+	
+	public List<GamePolicyCard> getCards() {
+		return cards;
+	}
+	
+	public boolean isVetoBlocked() {
+		return vetoBlocked;
+	}
 
 }

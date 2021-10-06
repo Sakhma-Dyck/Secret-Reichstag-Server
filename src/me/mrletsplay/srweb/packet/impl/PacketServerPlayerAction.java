@@ -21,4 +21,12 @@ public class PacketServerPlayerAction extends PacketData {
 		this.data = data;
 	}
 	
+	public GameBoardAction getAction() {
+		return action;
+	}
+	
+	public GameActionData getData() {
+		return data;
+	}
+	
 }

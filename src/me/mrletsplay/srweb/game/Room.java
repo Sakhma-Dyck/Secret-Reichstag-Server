@@ -130,16 +130,16 @@ public class Room implements JavaScriptConvertible {
 		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player, false))));
 		players.add(player);
 		
+		broadcastEventLogEntry(player.getName() + " joined");
+		
 		gameState.updateGameBoards();
 		broadcastStateUpdate();
-		
-		broadcastEventLogEntry(player.getName() + " joined");
 	}
 	
 	public void rejoinPlayer(Player player) {
 		players.forEach(p -> p.send(new Packet(new PacketServerPlayerJoined(player, true))));
 		
-		player.send(new Packet(getStartPackage(gameState.getRole(player))));
+		player.send(new Packet(getStartPacket(gameState.getRole(player))));
 		
 		if(players.stream().allMatch(Player::isOnline)) unpauseGame();
 		
@@ -252,18 +252,18 @@ public class Room implements JavaScriptConvertible {
 		gameState.setPresidentIndex(presidentIndex);
 		
 		// shows players what they're supposed to see
-		liberals.forEach(l -> l.send(new Packet(getStartPackage(GameRole.LIBERAL))));
+		liberals.forEach(l -> l.send(new Packet(getStartPacket(GameRole.LIBERAL))));
 		
-		if(stalin != null) stalin.send(new Packet(getStartPackage(GameRole.STALIN)));
-		communists.forEach(l -> l.send(new Packet(getStartPackage(GameRole.COMMUNIST))));
+		if(stalin != null) stalin.send(new Packet(getStartPacket(GameRole.STALIN)));
+		communists.forEach(l -> l.send(new Packet(getStartPacket(GameRole.COMMUNIST))));
 		
-		hitler.send(new Packet(getStartPackage(GameRole.HITLER)));
-		fascists.forEach(l -> l.send(new Packet(getStartPackage(GameRole.FASCIST))));
+		hitler.send(new Packet(getStartPacket(GameRole.HITLER)));
+		fascists.forEach(l -> l.send(new Packet(getStartPacket(GameRole.FASCIST))));
 		
 		broadcastStateUpdate();
 	}
 	
-	private PacketServerStartGame getStartPackage(GameRole role) {
+	private PacketServerStartGame getStartPacket(GameRole role) {
 		switch(role) {
 			case LIBERAL:
 				return new PacketServerStartGame(GameRole.LIBERAL, null, null);
