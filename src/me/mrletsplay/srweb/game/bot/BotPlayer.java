@@ -136,8 +136,6 @@ public class BotPlayer extends Player {
 					break;
 			}
 		}
-		
-		// Perform actions
 	}
 
 }
