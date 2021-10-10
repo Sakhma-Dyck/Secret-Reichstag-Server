@@ -25,7 +25,7 @@ public class VetoHandler extends SingleTypePacketHandler<PacketClientVeto> {
 		Room r = player.getRoom();
 		GameState s = r.getGameState();
 		
-		if(s.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR) && s.getChancellor().equals(player) && s.isVetoPowerUnlocked() && !s.isVetoBlocked()) {
+		if(s.getMoveState().equals(GameMoveState.DISCARD_CHANCELLOR) && s.getChancellor().equals(player) && s.isVetoPowerUnlocked() && !s.isVetoBlocked() && !s.isVetoRequested()) {
 			s.setVetoRequested(true);
 			r.broadcastEventLogEntry(player.getName() + " has requested a veto");
 			

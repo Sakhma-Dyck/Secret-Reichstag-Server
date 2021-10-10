@@ -16,6 +16,10 @@ public class PacketClientVeto extends PacketData {
 	@JSONConstructor
 	private PacketClientVeto() {}
 	
+	public PacketClientVeto(boolean acceptVeto) {
+		this.acceptVeto = acceptVeto;
+	}
+
 	public boolean isAcceptVeto() {
 		return acceptVeto;
 	}

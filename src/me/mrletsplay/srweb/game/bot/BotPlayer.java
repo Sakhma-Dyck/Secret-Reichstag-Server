@@ -22,10 +22,12 @@ import me.mrletsplay.srweb.packet.impl.PacketClientDiscardCard;
 import me.mrletsplay.srweb.packet.impl.PacketClientDrawCards;
 import me.mrletsplay.srweb.packet.impl.PacketClientPerformAction;
 import me.mrletsplay.srweb.packet.impl.PacketClientSelectChancellor;
+import me.mrletsplay.srweb.packet.impl.PacketClientVeto;
 import me.mrletsplay.srweb.packet.impl.PacketClientVote;
 import me.mrletsplay.srweb.packet.impl.PacketServerPickCards;
 import me.mrletsplay.srweb.packet.impl.PacketServerPlayerAction;
 import me.mrletsplay.srweb.packet.impl.PacketServerUpdateGameState;
+import me.mrletsplay.srweb.packet.impl.PacketServerVeto;
 
 public class BotPlayer extends Player {
 	
@@ -61,7 +63,9 @@ public class BotPlayer extends Player {
 						.collect(Collectors.toList());
 				SRWebMain.handlePacket(this, new Packet(new PacketClientSelectChancellor(pls.get(RANDOM.nextInt(pls.size())).getID())));
 			}else if(st.getMoveState() == GameMoveState.VOTE) {
-				SRWebMain.handlePacket(this, new Packet(new PacketClientVote(RANDOM.nextBoolean())));
+				boolean voteYes = !(getRoom().getGameState().getPresident() instanceof BotPlayer)
+						|| !(getRoom().getGameState().getChancellor() instanceof BotPlayer);
+				SRWebMain.handlePacket(this, new Packet(new PacketClientVote(voteYes)));
 			}else if(st.getMoveState() == GameMoveState.DRAW_CARDS
 					&& st.getPresident().getID().equals(getID())) {
 				SRWebMain.handlePacket(this, new Packet(new PacketClientDrawCards()));
@@ -135,6 +139,8 @@ public class BotPlayer extends Player {
 				default:
 					break;
 			}
+		}else if(d instanceof PacketServerVeto) {
+			SRWebMain.handlePacket(this, new Packet(new PacketClientVeto(RANDOM.nextBoolean())));
 		}
 	}
 
