@@ -127,7 +127,9 @@ public class SRWebSocketServer extends WebSocketServer {
 						pl = sess.getPlayer();
 						
 						if(pl.isOnline()) {
-							conn.send(new Packet(p.getID(), new PacketServerJoinError("Session already in use")).toJSON().toString());
+							if(pl.getWebSocket() != null) pl.getWebSocket().close(CloseFrame.NORMAL, "Connected from another location"); // Kick the old player
+							pl.setWebSocket(conn);
+							pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
 							return;
 						}
 						
@@ -227,6 +229,7 @@ public class SRWebSocketServer extends WebSocketServer {
 					pl.send(new Packet(p.getID(), new PacketServerRoomInfo(sessID, pl, r)));
 					return;
 				}catch(Exception e) {
+					e.printStackTrace();
 					conn.close(CloseFrame.POLICY_VALIDATION, "Invalid connect request");
 					return;
 				}
