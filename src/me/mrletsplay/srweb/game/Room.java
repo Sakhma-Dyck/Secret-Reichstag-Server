@@ -8,6 +8,7 @@ import java.util.Random;
 
 import me.mrletsplay.mrcore.json.converter.JSONValue;
 import me.mrletsplay.srweb.SRWeb;
+import me.mrletsplay.srweb.game.bot.BotPlayer;
 import me.mrletsplay.srweb.game.state.GameMoveState;
 import me.mrletsplay.srweb.game.state.GameParty;
 import me.mrletsplay.srweb.game.state.GameRole;
@@ -164,7 +165,7 @@ public class Room implements JavaScriptConvertible {
 	public void removePlayer(Player player) {
 		if(!players.contains(player)) return;
 		
-		boolean closeRoom = players.isEmpty() || players.stream().allMatch(p -> !p.isOnline());
+		boolean closeRoom = players.isEmpty() || players.stream().allMatch(p -> !p.isOnline() || p instanceof BotPlayer);
 		boolean hardLeave = closeRoom || !gameRunning /*|| gameState.isPlayerDead(player)*/;
 		
 		if(hardLeave) {

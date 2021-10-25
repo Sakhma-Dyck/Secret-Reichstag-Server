@@ -8,6 +8,7 @@ import me.mrletsplay.srweb.packet.Packet;
 import me.mrletsplay.srweb.packet.PacketData;
 import me.mrletsplay.srweb.packet.handler.SingleTypePacketHandler;
 import me.mrletsplay.srweb.packet.impl.PacketClientChatMessage;
+import me.mrletsplay.srweb.packet.impl.PacketServerEventLogEntry;
 import me.mrletsplay.srweb.packet.impl.PacketServerNoData;
 
 public class ChatMessageHandler extends SingleTypePacketHandler<PacketClientChatMessage> {
@@ -25,6 +26,16 @@ public class ChatMessageHandler extends SingleTypePacketHandler<PacketClientChat
 		
 		if(data.getMessage().equalsIgnoreCase("/addbot")) {
 			BotPlayer bPl = new BotPlayer();
+			if(player.getRoom().isGameRunning()) {
+				player.send(new Packet(new PacketServerEventLogEntry("Can't add bot: Game is running", false)));
+				return PacketServerNoData.INSTANCE;
+			}
+			
+			if(player.getRoom().isFull()) {
+				player.send(new Packet(new PacketServerEventLogEntry("Can't add bot: Room is full", false)));
+				return PacketServerNoData.INSTANCE;
+			}
+			
 			player.getRoom().addPlayer(bPl);
 			return PacketServerNoData.INSTANCE;
 		}
