@@ -127,9 +127,10 @@ public class SRWebSocketServer extends WebSocketServer {
 						pl = sess.getPlayer();
 						
 						if(pl.isOnline()) {
-							if(pl.getWebSocket() != null) pl.getWebSocket().close(CloseFrame.NORMAL, "Connected from another location"); // Kick the old player
+							WebSocket oldWebSocket = pl.getWebSocket();
 							pl.setWebSocket(conn);
 							pl.send(new Packet(p.getID(), new PacketServerRoomInfo(con.getSessionID(), pl, pl.getRoom())));
+							if(oldWebSocket != null) oldWebSocket.close(CloseFrame.NORMAL, "Connected from another location"); // Kick the old player
 							return;
 						}
 						
