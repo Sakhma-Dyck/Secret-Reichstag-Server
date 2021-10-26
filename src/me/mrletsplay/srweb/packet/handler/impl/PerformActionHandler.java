@@ -30,8 +30,9 @@ public class PerformActionHandler extends SingleTypePacketHandler<PacketClientPe
 	@Override
 	public PacketData handleSingle(Player player, Packet packet, PacketClientPerformAction data) {
 		Room r = player.getRoom();
-		GameState s = r.getGameState();
+		if(!r.isGameRunning()) return PacketServerNoData.INSTANCE;
 		
+		GameState s = r.getGameState();
 		if(s.getMoveState().equals(GameMoveState.ACTION) && s.getActionPerformer().equals(player)) {
 			switch(s.getAction()) {
 				case KILL_PLAYER:

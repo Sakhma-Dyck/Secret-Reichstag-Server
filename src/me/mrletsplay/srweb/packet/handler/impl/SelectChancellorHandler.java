@@ -20,8 +20,9 @@ public class SelectChancellorHandler extends SingleTypePacketHandler<PacketClien
 	@Override
 	public PacketData handleSingle(Player player, Packet packet, PacketClientSelectChancellor data) {
 		Room r = player.getRoom();
-		GameState s = r.getGameState();
+		if(!r.isGameRunning()) return PacketServerNoData.INSTANCE;
 		
+		GameState s = r.getGameState();
 		if(s.getMoveState().equals(GameMoveState.SELECT_CHANCELLOR) && s.getPresident().equals(player)) {
 			Player ch = r.getPlayer(data.getPlayerID());
 			

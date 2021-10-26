@@ -29,6 +29,8 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 	@Override
 	public PacketData handleSingle(Player player, Packet packet, PacketClientDiscardCard data) {
 		Room r = player.getRoom();
+		if(!r.isGameRunning()) return PacketServerNoData.INSTANCE;
+		
 		GameState s = r.getGameState();
 		if(s.getPresident().equals(player) && s.getMoveState().equals(GameMoveState.DISCARD_PRESIDENT)) {
 			if(data.getDiscardIndex() < 0 || data.getDiscardIndex() > 2) return PacketServerNoData.INSTANCE;

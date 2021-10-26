@@ -22,6 +22,8 @@ public class DrawCardsHandler extends SingleTypePacketHandler<PacketClientDrawCa
 	@Override
 	public PacketData handleSingle(Player player, Packet packet, PacketClientDrawCards data) {
 		Room r = player.getRoom();
+		if(!r.isGameRunning()) return PacketServerNoData.INSTANCE;
+		
 		if(r.getGameState().getMoveState().equals(GameMoveState.DRAW_CARDS) && r.getGameState().getPresident().equals(player)) {
 			List<GamePolicyCard> drawnCards = r.getGameState().drawCards();
 			player.setHand(drawnCards);
