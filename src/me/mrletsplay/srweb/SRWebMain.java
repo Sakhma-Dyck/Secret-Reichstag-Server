@@ -15,8 +15,8 @@ public class SRWebMain {
 		serverSecure;
 	
 	public static void main(String[] args) throws IOException {
-		serverInsecure = new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34642), false);
-		serverSecure = SRWebConfig.isEnableSSL() ? new SRWebSocketServer(new InetSocketAddress("0.0.0.0", 34643), true) : null;
+		serverInsecure = new SRWebSocketServer(new InetSocketAddress(SRWebConfig.getInsecureHost(), SRWebConfig.getInsecurePort()), false);
+		serverSecure = SRWebConfig.isEnableSSL() ? new SRWebSocketServer(new InetSocketAddress(SRWebConfig.getSecureHost(), SRWebConfig.getSecurePort()), true) : null;
 		
 		SRWeb.PACKET_HANDLERS.forEach(p -> {
 			serverInsecure.addHandler(p);

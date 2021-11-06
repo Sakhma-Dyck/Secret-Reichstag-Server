@@ -15,6 +15,10 @@ public class SRWebConfig {
 		config.addDefault("ssl.certificate-path", "pem/cert.pem");
 		config.addDefault("ssl.private-key-path", "pem/privkey.pem");
 		config.addDefault("ssl.certificate-password", "");
+		config.addDefault("server.insecure.host", "0.0.0.0");
+		config.addDefault("server.insecure.port", 34642);
+		config.addDefault("server.secure.host", "0.0.0.0");
+		config.addDefault("server.secure.port", 34643);
 		config.applyDefaults();
 		config.saveToFile();
 	}
@@ -33,6 +37,22 @@ public class SRWebConfig {
 	
 	public static String getCertificatePassword() {
 		return config.getString("ssl.certificate-password");
+	}
+	
+	public static String getInsecureHost() {
+		return config.getString("server.insecure.host");
+	}
+	
+	public static int getInsecurePort() {
+		return config.getInt("server.insecure.port");
+	}
+	
+	public static String getSecureHost() {
+		return config.getString("server.secure.host");
+	}
+	
+	public static int getSecurePort() {
+		return config.getInt("server.secure.port");
 	}
 
 }
