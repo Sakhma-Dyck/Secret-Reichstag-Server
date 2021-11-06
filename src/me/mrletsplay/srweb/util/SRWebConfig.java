@@ -11,7 +11,7 @@ public class SRWebConfig {
 	
 	static {
 		config = ConfigLoader.loadFileConfig(new File("config.yml"));
-		config.addDefault("ssl.enable", true);
+		config.addDefault("ssl.enable", false);
 		config.addDefault("ssl.certificate-path", "pem/cert.pem");
 		config.addDefault("ssl.private-key-path", "pem/privkey.pem");
 		config.addDefault("ssl.certificate-password", "");
