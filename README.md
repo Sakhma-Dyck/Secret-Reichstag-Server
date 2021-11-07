@@ -65,10 +65,6 @@ Under `/etc/apache2/sites-available/` create a new configuration file (e.g. `sec
 	ServerName sr.your.domain
 
 	ServerAdmin webmaster@your.domain
-  
-	# You only need to set the DocumentRoot if you want to host the web version as well
-	# For more instructions, see the README of https://github.com/MrLetsplay2003/Secret-Reichstag-Web
-	# DocumentRoot /var/www/secretreichstag
 
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
