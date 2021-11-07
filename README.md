@@ -32,6 +32,7 @@ The server supports using secure websockets (`wss://`) instead of insecure (`ws:
 
 ### Setting up a proxy using Apache2
 If you want to integrate the server into your existing domain/webpage configuration using Apache2, you can do so by using a proxy. Please keep in mind that these instructions apply to using Apache2 on Linux. If you're running it on Windows, you might need to adapt some of the steps.
+> Note: If you plan on hosting the web client as well, please refer to the README of [Secret-Reichstag-Web](https://github.com/MrLetsplay2003/Secret-Reichstag-Web#readme) and follow the instructions there
 
 #### Using an existing domain
 To use an existing (sub-)domain for your server, you need to edit the site's config file and add the following lines to its `VirtualHost`
@@ -69,6 +70,9 @@ Under `/etc/apache2/sites-available/` create a new configuration file (e.g. `sec
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 	
+	SSLCertificateFile /path/to/your/certificate.pem
+	SSLCertificateKeyFile /path/to/your/privatekey.pem
+	
 	# For insecure WebSockets. If you're using secure websockets, disable this
 	ProxyPass "/" "ws://localhost:34642"
 	
@@ -76,8 +80,6 @@ Under `/etc/apache2/sites-available/` create a new configuration file (e.g. `sec
 	# Note: Internally, this will always use insecure websockets. You can change this if you want
 	# SSLProxyEngine On
 	# ProxyPass "/" "ws://localhost:34642"
-	# SSLCertificateFile /path/to/your/certificate.pem
-	# SSLCertificateKeyFile /path/to/your/privatekey.pem
 </VirtualHost>
 ```
 
