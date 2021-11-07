@@ -82,6 +82,7 @@ Under `/etc/apache2/sites-available/` create a new configuration file (e.g. `sec
 	# ProxyPass "/" "ws://localhost:34642"
 </VirtualHost>
 ```
+> If you don't want to use https, make sure to change the `*:443` to `*:80` and remove the `SSLCertificateFile` and `SSLCertificateKeyFile`
 
 Before enabling the new site, you need to make sure you've enabled the right modules for Apache2 to proxy the WebSockets. To do so, use
 ```
