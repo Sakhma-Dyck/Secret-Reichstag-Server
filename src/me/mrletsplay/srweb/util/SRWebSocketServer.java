@@ -2,6 +2,7 @@ package me.mrletsplay.srweb.util;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +17,7 @@ import org.java_websocket.server.WebSocketServer;
 
 import me.mrletsplay.mrcore.json.JSONArray;
 import me.mrletsplay.mrcore.json.JSONObject;
+import me.mrletsplay.mrcore.json.converter.DeserializationOption;
 import me.mrletsplay.mrcore.json.converter.JSONConverter;
 import me.mrletsplay.srweb.SRWeb;
 import me.mrletsplay.srweb.game.GameMode;
@@ -108,7 +110,7 @@ public class SRWebSocketServer extends WebSocketServer {
 		
 		System.out.println(">> " + message);
 		
-		Packet p = JSONConverter.decodeObject(new JSONObject(message), Packet.class);
+		Packet p = JSONConverter.decodeObject(new JSONObject(message), Packet.class, EnumSet.of(DeserializationOption.SHORT_ENUMS));
 		Player pl = SRWeb.getPlayer(conn);
 		
 		if(pl == null) {

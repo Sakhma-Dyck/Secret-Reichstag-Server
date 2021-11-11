@@ -1,15 +1,15 @@
 package me.mrletsplay.srweb.packet;
 
 import me.mrletsplay.mrcore.json.JSONObject;
+import me.mrletsplay.mrcore.json.converter.JSONEnum;
 import me.mrletsplay.mrcore.misc.FriendlyException;
 
-public interface JavaScriptEnum extends JavaScriptConvertible {
+public interface JavaScriptEnum extends JavaScriptConvertible, JSONEnum {
 	
-	@Override
 	public default void preSerialize(JSONObject object) {
 		if(!(this instanceof Enum<?>)) throw new FriendlyException("Not an enum");
 		JavaScriptConvertible.super.preSerialize(object);
 		object.put("jsEnumName", ((Enum<?>) this).name());
 	}
-
+	
 }

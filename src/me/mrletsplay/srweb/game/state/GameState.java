@@ -129,53 +129,77 @@ public class GameState implements JavaScriptConvertible {
 	}
 	
 	public void updateGameBoards() {
+		if(fascistBoard == null && room.getSettings().getFascistBoard() != null) {
+			this.fascistBoard = new GameBoard(true, 5, room.getSettings().getFascistBoard().toArray(GameBoardActionField[]::new));
+		}
+		
+		if(communistBoard == null && room.getSettings().getCommunistBoard() != null) {
+			this.communistBoard = new GameBoard(true, 5, room.getSettings().getCommunistBoard().toArray(GameBoardActionField[]::new));
+		}
+		
 		int numPlayers = room.getPlayers().size();
 		
 		if(room.getMode() == GameMode.SECRET_REICHSTAG) {
 			if(numPlayers <= 8) {
-				this.communistBoard = new GameBoard(6,
-						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
-						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
-				this.fascistBoard = new GameBoard(6,
-						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
-						new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				if(communistBoard == null || !communistBoard.isCustom()) {
+					this.communistBoard = new GameBoard(6,
+							new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
+							new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
+				
+				if(fascistBoard == null || !fascistBoard.isCustom()) {
+					this.fascistBoard = new GameBoard(6,
+							new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
+							new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
 			}else if(numPlayers >= 9) {
-				this.communistBoard = new GameBoard(6,
-						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
-						new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
-						new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
-				this.fascistBoard = new GameBoard(6,
-						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
-						new GameBoardActionField(1, GameBoardAction.PICK_PRESIDENT),
-						new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				if(communistBoard == null || !communistBoard.isCustom()) {
+					this.communistBoard = new GameBoard(6,
+							new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+							new GameBoardActionField(1, GameBoardAction.EXAMINE_TOP_CARDS),
+							new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS_OTHER),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
+				
+				if(fascistBoard == null || !fascistBoard.isCustom()) {
+					this.fascistBoard = new GameBoard(6,
+							new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+							new GameBoardActionField(1, GameBoardAction.PICK_PRESIDENT),
+							new GameBoardActionField(2, GameBoardAction.BLOCK_PLAYER),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
 			}
 		}else {
 			if(numPlayers <= 6) {
-				this.fascistBoard = new GameBoard(6,
-						new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				if(fascistBoard == null || !fascistBoard.isCustom()) {
+					this.fascistBoard = new GameBoard(6,
+							new GameBoardActionField(2, GameBoardAction.EXAMINE_TOP_CARDS),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
 			}else if(numPlayers <= 8) {
-				this.fascistBoard = new GameBoard(6,
-						new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
-						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				if(fascistBoard == null || !fascistBoard.isCustom()) {
+					this.fascistBoard = new GameBoard(6,
+							new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
+							new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
 			}else {
-				this.fascistBoard = new GameBoard(6,
-						new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
-						new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
-						new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
-						new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
-						new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				if(fascistBoard == null || !fascistBoard.isCustom()) {
+					this.fascistBoard = new GameBoard(6,
+							new GameBoardActionField(0, GameBoardAction.INSPECT_PLAYER),
+							new GameBoardActionField(1, GameBoardAction.INSPECT_PLAYER),
+							new GameBoardActionField(2, GameBoardAction.PICK_PRESIDENT),
+							new GameBoardActionField(3, GameBoardAction.KILL_PLAYER),
+							new GameBoardActionField(4, GameBoardAction.KILL_PLAYER));
+				}
 			}
 		}
 	}

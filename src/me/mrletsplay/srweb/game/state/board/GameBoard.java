@@ -21,9 +21,18 @@ public class GameBoard implements JavaScriptConvertible {
 	@JavaScriptGetter("getActionFields")
 	private List<GameBoardActionField> actionFields;
 	
-	public GameBoard(int maxCards, GameBoardActionField... actionFields) {
+	@JSONValue
+	@JavaScriptGetter("isCustom")
+	private boolean isCustom;
+	
+	public GameBoard(boolean isCustom, int maxCards, GameBoardActionField... actionFields) {
+		this.isCustom = isCustom;
 		this.maxCards = maxCards;
 		this.actionFields = Arrays.asList(actionFields);
+	}
+	
+	public GameBoard(int maxCards, GameBoardActionField... actionFields) {
+		this(false, maxCards, actionFields);
 	}
 	
 	public GameBoardAction addCard() {
@@ -53,6 +62,10 @@ public class GameBoard implements JavaScriptConvertible {
 	
 	public List<GameBoardActionField> getActionFields() {
 		return actionFields;
+	}
+	
+	public boolean isCustom() {
+		return isCustom;
 	}
 
 }

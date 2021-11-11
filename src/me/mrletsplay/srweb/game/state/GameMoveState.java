@@ -10,5 +10,6 @@ public enum GameMoveState implements JavaScriptEnum {
 	DISCARD_PRESIDENT,
 	DISCARD_CHANCELLOR,
 	ACTION,
+	;
 
 }

@@ -2,10 +2,12 @@ package me.mrletsplay.srweb.packet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.EnumSet;
 
 import me.mrletsplay.mrcore.json.JSONArray;
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.converter.JSONValue;
+import me.mrletsplay.mrcore.json.converter.SerializationOption;
 import me.mrletsplay.mrcore.misc.ClassUtils;
 
 public class ClassSerializer {
@@ -74,7 +76,7 @@ public class ClassSerializer {
 			JSONObject enumValues = new JSONObject();
 			
 			for(JavaScriptConvertible e : packetClass.getEnumConstants()) {
-				enumValues.put(((Enum<?>) e).name(), e.toJSON());
+				enumValues.put(((Enum<?>) e).name(), e.toJSON(EnumSet.of(SerializationOption.EXTENDED_ENUMS)));
 			}
 			
 			obj.put("isEnum", true);
