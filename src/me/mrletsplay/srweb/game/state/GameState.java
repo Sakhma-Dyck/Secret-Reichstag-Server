@@ -108,7 +108,12 @@ public class GameState implements JavaScriptConvertible {
 	
 	public GameState(Room room) {
 		this.room = room;
-		this.liberalBoard = new GameBoard(5);
+		
+		if(room.getSettings().getLiberalBoard() != null) {
+			this.liberalBoard = new GameBoard(5, room.getSettings().getLiberalBoard().toArray(GameBoardActionField[]::new));
+		}else {
+			this.liberalBoard = new GameBoard(5);
+		}
 		
 		updateGameBoards();
 		
