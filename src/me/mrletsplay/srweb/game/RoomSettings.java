@@ -105,7 +105,10 @@ public class RoomSettings implements JavaScriptConvertible {
 			GameMode m = GameMode.valueOf(mode);
 			return liberalCardCount >= 5 && liberalCardCount <= 15 &&
 					((communistCardCount >= 6 && communistCardCount <= 15) || m == GameMode.SECRET_HITLER) &&
-					fascistCardCount >= 6 && fascistCardCount <= 15;
+					fascistCardCount >= 6 && fascistCardCount <= 15
+					&& liberalBoard.stream().allMatch(f -> f.isValid(5))
+					&& fascistBoard.stream().allMatch(f -> f.isValid(6))
+					&& communistBoard.stream().allMatch(f -> f.isValid(6));
 		}catch(IllegalArgumentException | NullPointerException e) {
 			return false;
 		}

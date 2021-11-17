@@ -15,4 +15,8 @@ public class ActionInspectPlayerResult extends PacketData {
 		this.party = party;
 	}
 	
+	public GameParty getParty() {
+		return party;
+	}
+	
 }

@@ -42,6 +42,11 @@ public class GameBoard implements JavaScriptConvertible {
 		return f == null ? null : f.getAction();
 	}
 	
+	public boolean hasFutureAction(GameBoardAction action) {
+		return actionFields.stream()
+				.anyMatch(f -> f.getFieldIndex() >= numCards && f.getAction() == action);
+	}
+	
 	public void setNumCards(int numCards) {
 		this.numCards = numCards;
 	}

@@ -91,4 +91,9 @@ public class Player implements JavaScriptConvertible {
 		webSocket.send(p.toJSON().toString());
 	}
 	
+	@Override
+	public String toString() {
+		return "[Player: " + name + "]";
+	}
+	
 }

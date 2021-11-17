@@ -225,6 +225,14 @@ public class GameState implements JavaScriptConvertible {
 		return fascistBoard;
 	}
 	
+	public List<GameBoard> getActiveBoards() {
+		List<GameBoard> boards = new ArrayList<>();
+		boards.add(liberalBoard);
+		boards.add(fascistBoard);
+		if(room.getMode() == GameMode.SECRET_REICHSTAG) boards.add(communistBoard);
+		return boards;
+	}
+	
 	public List<GamePolicyCard> getDrawPile() {
 		return drawPile;
 	}

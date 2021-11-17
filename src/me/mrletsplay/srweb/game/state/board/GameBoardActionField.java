@@ -33,5 +33,11 @@ public class GameBoardActionField implements JavaScriptConvertible {
 	public GameBoardAction getAction() {
 		return action;
 	}
+	
+	public boolean isValid(int numFields) {
+		return action != null
+				&& fieldIndex >= 0
+				&& fieldIndex < numFields;
+	}
 
 }

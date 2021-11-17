@@ -66,6 +66,20 @@ public class DiscardCardHandler extends SingleTypePacketHandler<PacketClientDisc
 				s.setVetoPowerUnlocked(true);
 			}
 			
+			if(ac == GameBoardAction.KILL_PLAYER) {
+				int alivePlayers = (int) r.getPlayers().stream()
+						.filter(p -> !s.isPlayerDead(p))
+						.count();
+				int requiredPlayers = 4
+						+ (r.getPlayers().size() >= r.getMode().getMinPrevPresident() ? 1 : 0)
+						+ (s.getActiveBoards().stream().anyMatch(b -> b.hasFutureAction(GameBoardAction.BLOCK_PLAYER)) ? 1 : 0);
+				if(alivePlayers < requiredPlayers) {
+					// Avoid impossible situations where nobody can be selected as chancellor
+					ac = null;
+					r.broadcastEventLogEntry("The kill action has been skipped to avoid impossible deadlocks");
+				}
+			}
+			
 			if(ac == null) {
 				s.advanceRound();
 			}else {
