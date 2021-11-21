@@ -101,7 +101,6 @@ public class RoomSettings implements JavaScriptConvertible {
 	
 	public boolean isValid() {
 		try {
-			// TODO: check fields
 			GameMode m = GameMode.valueOf(mode);
 			return liberalCardCount >= 5 && liberalCardCount <= 15 &&
 					((communistCardCount >= 6 && communistCardCount <= 15) || m == GameMode.SECRET_HITLER) &&
