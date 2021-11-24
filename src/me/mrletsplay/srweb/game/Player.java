@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.java_websocket.WebSocket;
+import org.java_websocket.framing.CloseFrame;
 
+import me.mrletsplay.mrcore.command.CommandSender;
 import me.mrletsplay.mrcore.json.converter.JSONValue;
 import me.mrletsplay.srweb.game.state.GamePolicyCard;
 import me.mrletsplay.srweb.game.state.board.action.GameActionData;
@@ -13,8 +15,9 @@ import me.mrletsplay.srweb.packet.JavaScriptConvertible;
 import me.mrletsplay.srweb.packet.JavaScriptGetter;
 import me.mrletsplay.srweb.packet.JavaScriptSetter;
 import me.mrletsplay.srweb.packet.Packet;
+import me.mrletsplay.srweb.packet.impl.PacketServerEventLogEntry;
 
-public class Player implements JavaScriptConvertible {
+public class Player implements JavaScriptConvertible, CommandSender {
 
 	private WebSocket webSocket;
 	
@@ -89,6 +92,15 @@ public class Player implements JavaScriptConvertible {
 	public void send(Packet p) {
 		if(!isOnline()) return;
 		webSocket.send(p.toJSON().toString());
+	}
+	
+	public void disconnect(String reason) {
+		webSocket.close(CloseFrame.NORMAL, reason);
+	}
+
+	@Override
+	public void sendMessage(String message) {
+		send(new Packet(new PacketServerEventLogEntry(message, false)));
 	}
 	
 	@Override

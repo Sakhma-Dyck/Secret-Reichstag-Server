@@ -162,6 +162,14 @@ public class Room implements JavaScriptConvertible {
 		broadcastEventLogEntry(player.getName() + " rejoined");
 	}
 	
+	public void kickPlayer(Player player) {
+		if(!players.contains(player)) return;
+		
+		boolean stopGame = gameRunning && !gameState.isPlayerDead(player);
+		if(stopGame) stopGame();
+		removePlayer(player);
+	}
+	
 	public void removePlayer(Player player) {
 		if(!players.contains(player)) return;
 		
@@ -170,7 +178,7 @@ public class Room implements JavaScriptConvertible {
 		
 		if(hardLeave) {
 			player.setRoom(null);
-			gameState.getDeadPlayers().remove(player);
+			gameState.removePlayer(player);
 			players.remove(player);
 		}
 		
@@ -284,6 +292,12 @@ public class Room implements JavaScriptConvertible {
 	public Player getPlayer(String id) {
 		return players.stream()
 				.filter(p -> p.getID().equals(id))
+				.findFirst().orElse(null);
+	}
+	
+	public Player getPlayerByName(String name) {
+		return players.stream()
+				.filter(p -> p.getName().equalsIgnoreCase(name))
 				.findFirst().orElse(null);
 	}
 	

@@ -36,6 +36,7 @@ public class GameBoardActionField implements JavaScriptConvertible {
 	
 	public boolean isValid(int numFields) {
 		return action != null
+				&& action != GameBoardAction.WIN
 				&& fieldIndex >= 0
 				&& fieldIndex < numFields;
 	}
