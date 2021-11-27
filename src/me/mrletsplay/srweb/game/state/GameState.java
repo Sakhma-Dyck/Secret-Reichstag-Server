@@ -118,7 +118,9 @@ public class GameState implements JavaScriptConvertible {
 		updateGameBoards();
 		
 		this.drawPile = new ArrayList<>();
-		for(int i = 0; i < room.getSettings().getCommunistCardCount(); i++) drawPile.add(GamePolicyCard.COMMUNIST);
+		if(room.getMode() == GameMode.SECRET_REICHSTAG) {
+			for(int i = 0; i < room.getSettings().getCommunistCardCount(); i++) drawPile.add(GamePolicyCard.COMMUNIST);
+		}
 		for(int i = 0; i < room.getSettings().getFascistCardCount(); i++) drawPile.add(GamePolicyCard.FASCIST);
 		for(int i = 0; i < room.getSettings().getLiberalCardCount(); i++) drawPile.add(GamePolicyCard.LIBERAL);
 		Collections.shuffle(drawPile);
