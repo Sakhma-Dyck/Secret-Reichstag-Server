@@ -2,7 +2,21 @@ bin/
 target/
 /config.yml
 /dependency-reduced-pom.xml
-/config.yml
-/config.yml
-/config.yml
-/config.yml
+*p=+5;
+while(*p != 0){
+*p--;
+}memory blocks
+-------------
+[0][0][0][0][0][0]...
+^
+memory pointer
+++p;
+*p=+9;
+while(*p != 0){
+--p;
+*p=+8;
+--p;
+--*p;
+}
+--p;
+putchar(*p);
